@@ -2,7 +2,6 @@ var express = require('express');
 var path = require('path');
 var mysql = require('mysql');
 var bodyParser = require('body-parser');
-
 const port = 3000;
 
 var routes = require('./routes/index');
@@ -19,6 +18,22 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 
+let database = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  database: "cs160", // Enter the name of your database
+  password: "P1p3d-sql" // Enter your password
+});
+
+database.connect(function(error) {
+  if (error) {
+    console.log("Error connecting to database");
+    console.log(error);
+  } else {
+    console.log("Connected to database");
+  }
+});
+
 app.use('/', routes);
 app.use('/users', users);
 
@@ -26,6 +41,15 @@ app.use('/users', users);
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
+    let query = "SELECT * FROM accounts";
+    database.query(query, function(error, result) {
+      if (error) {
+        console.log("Error in studyset query");
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
     next(err);
 });
 
