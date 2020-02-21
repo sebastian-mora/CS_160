@@ -1,8 +1,9 @@
 var express = require('express');
 var path = require('path');
+var mysql = require('mysql');
 var bodyParser = require('body-parser');
 
-const port = 3000
+const port = 3000;
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
