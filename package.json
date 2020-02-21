@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "express": "",
     "body-parser": "",
     "debug": "",
-    "ejs":"",
+    "ejs": "",
+    "express": "",
+    "mysql": "^2.18.1"
   }
 }
