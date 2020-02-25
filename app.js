@@ -2,7 +2,7 @@ var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
 
-const port = 3000
+const port = 3000;
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -55,4 +55,4 @@ app.use(function(err, req, res, next) {
     });
 });
 
-app.listen(port, () => console.log(`CS-160 app listening on port ${port}!`))
+app.listen(port, () => console.log(`CS-160 app listening on port ${port}!`));
