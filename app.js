@@ -6,7 +6,7 @@ const port = 3000;
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var task = require('./routes/task');
+var tasks = require('./routes/tasks');
 
 var app = express();
 
@@ -21,10 +21,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
-app.use('/task', task);
-app.use('/task/:uid', task);
+app.use('/tasks', tasks);
+app.use('/tasks/:uid', tasks);
 
-/// catch 404 and forwarding to error handler
+// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;

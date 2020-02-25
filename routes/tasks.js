@@ -30,7 +30,7 @@ router.get('/', function(req, res) {
     res.send("requested task with no id");
 });
 
-// can test like `curl -v http://127.0.0.1:3000/task/6`
+// can test like `curl -v http://127.0.0.1:3000/tasks/6`
 router.get('/:uid', function(req, res) {
     const taskJson = lookupTask(req.params.uid);
     if (taskJson === {}) {
