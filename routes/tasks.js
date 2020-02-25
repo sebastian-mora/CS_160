@@ -20,6 +20,7 @@ function isEmptyObject(obj) {
         typeof obj !== 'object' || Object.getOwnPropertyNames(obj).length === 0;
 }
 
+
 // ========= DATABASE
 // note: as these are internal methods, they assume valid input
 
@@ -61,10 +62,8 @@ router.get('/', function(req, res) {
 router.get('/:uid', function(req, res) {
     const taskJson = lookupTask(req.params.uid);
     if (isEmptyObject(taskJson)) {
-        console.log(req.params.uid);
         res.status(404).send('Task with uid=' + req.params.uid + " does not exist");
     } else {
-        console.log(taskJson);
         res.send(taskJson);
     }
 });
