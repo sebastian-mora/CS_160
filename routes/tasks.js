@@ -36,6 +36,7 @@ function lookupTask(uid) {
         'date_due':     '2020-02-25T15:16:30.000Z',
         'title':        'my dummy task title',
         'description':  'my dummy description',
+        'priority': 'high',
         'tags':     [],
         'comments': [],
         'subtasks': []
