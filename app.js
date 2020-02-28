@@ -22,7 +22,7 @@ let database = mysql.createConnection({
   host: "localhost",
   user: "root",
   database: "cs160", // Enter the name of your database
-  password: "P1p3d-sql" // Enter your password
+  password: "YOURPASS" // Enter your password
 });
 
 database.connect(function(error) {
