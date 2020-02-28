@@ -13,6 +13,18 @@ function isValidDatetimeStringRange(from, to) {
     return start.getTime() < end.getTime() && from === start.toISOString() && to === end.toISOString();
 }
 
+// hasAllProperties(obj: object, fieldNames: array[string]) => bool
+// hasAllProperties({'foo': 1, 'bar': 2}, ...['foo', 'bar']) => true
+function hasAllProperties(obj, fieldNames) {
+    for (var i = 0; i < fieldNames.length; i++) {
+        if (!obj.hasOwnProperty(fieldNames[i])) {
+            console.log("missing field: " + fieldNames[i]);
+            return false;
+        }
+    }
+    return true;
+}
+
 function isEmptyObject(obj) {
     return obj === null ||
         obj === undefined ||
@@ -23,6 +35,12 @@ function isEmptyObject(obj) {
 
 // ========= DATABASE
 // note: as these are internal methods, they assume valid input
+
+// addTask(taskJson: json) => bool
+function addTask(taskJson) {
+    // todo: replace with actual database write
+    return true;
+}
 
 // lookupTask(uid: int) => json | {} if not found
 function lookupTask(uid) {
@@ -71,10 +89,18 @@ router.get('/:uid', function(req, res) {
 
 
 // ========= ENDPOINT: CREATING TASK
+// can test like:
+// curl -X POST http://127.0.0.1:3000/tasks -H 'Accept:application/json' -d "{'date_created':'2020-02-24 15:16:30','date_due':'2020-02-25 15:16:30','title':'TITLE','description':'DETAILS','tags':[],'comments':[],'subtasks':[]}"
 router.use(express.json());
 router.post('/', function(req, res) {
-    console.log(request.body);
-    response.send(request.body);
+    // todo: find a better place to put the field names...well actually maybe it is okay here?...
+    // maybe specify what field doesn't match in error message, etc?
+    if (!hasAllProperties(req.body, ['date_created', 'date_due', 'title', 'description', 'tags', 'comments', 'subtasks'])) {
+        res.status(400).send('Task field names do not match expected');
+    } else {
+        console.log(req.body);
+        res.send(req.body);
+    }
 });
 
 // ========= EXPORTS
