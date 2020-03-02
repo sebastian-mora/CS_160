@@ -100,10 +100,7 @@ router.get('/:uid', function(req, res) {
 
 // ========= ENDPOINT: CREATING TASK
 // can test like:
-// curl -X POST http://127.0.0.1:3000/tasks -H 'Accept:application/json' -d "{'date_created':'2020-02-24 15:16:30','date_due':'2020-02-25 15:16:30','title':'TITLE','description':'DETAILS','tags':[],'comments':[],'subtasks':[]}"
-// curl -X POST -H "Content-Type: application/json" -d "{\"key\":\"val\"}" http://127.0.0.1:3000/tasks
-// curl -i -X POST -H "Content-Type: application/json" -d '{"key":"val"}' http://127.0.0.1:3000/tasks
-// curl -v http://127.0.0.1:3000/tasks -H 'Accept:application/json' -d "{'date_created':'2020-02-24 15:16:30','date_due':'2020-02-25 15:16:30','title':'TITLE','description':'DETAILS','tags':'[]','comments':'[]','subtasks':'[]'}"
+// curl -v http://127.0.0.1:3000/tasks -H 'Accept:application/json' -d "{'date_created':'2020-02-24 15:16:30','date_due':'2020-02-25 15:16:30','title':'TITLE','description':'DETAILS','tags':[],'comments':[],'subtasks':[]}"
 router.post('/', function(req, res) {
     const expectedFields = ['date_created', 'date_due', 'title', 'description', 'tags', 'comments', 'subtasks'];
     var isValid;
