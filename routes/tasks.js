@@ -13,9 +13,19 @@ function isValidDatetimeStringRange(from, to) {
     return start.getTime() < end.getTime() && from === start.toISOString() && to === end.toISOString();
 }
 
-// hasAllProperties(obj: object, fieldNames: array[string]) => bool
-// hasAllProperties({'foo': 1, 'bar': 2}, ...['foo', 'bar']) => true
-function hasAllProperties(obj, fieldNames) {
+// throwErrorIfInvalidJSON(jsonText: string) => bool
+function isValidJSON(jsonText) {
+    try {
+        JSON.parse(text);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+// hasAllFields(obj: object, fieldNames: array[string]) => bool
+// hasAllFields({'foo': 1, 'bar': 2}, ...['foo', 'bar']) => true
+function hasAllFields(obj, fieldNames) {
     for (var i = 0; i < fieldNames.length; i++) {
         if (!obj.hasOwnProperty(fieldNames[i])) {
             console.log("missing field: " + fieldNames[i]);
@@ -91,15 +101,28 @@ router.get('/:uid', function(req, res) {
 // ========= ENDPOINT: CREATING TASK
 // can test like:
 // curl -X POST http://127.0.0.1:3000/tasks -H 'Accept:application/json' -d "{'date_created':'2020-02-24 15:16:30','date_due':'2020-02-25 15:16:30','title':'TITLE','description':'DETAILS','tags':[],'comments':[],'subtasks':[]}"
-router.use(express.json());
+// curl -X POST -H "Content-Type: application/json" -d "{\"key\":\"val\"}" http://127.0.0.1:3000/tasks
+// curl -i -X POST -H "Content-Type: application/json" -d '{"key":"val"}' http://127.0.0.1:3000/tasks
+// curl -v http://127.0.0.1:3000/tasks -H 'Accept:application/json' -d "{'date_created':'2020-02-24 15:16:30','date_due':'2020-02-25 15:16:30','title':'TITLE','description':'DETAILS','tags':'[]','comments':'[]','subtasks':'[]'}"
 router.post('/', function(req, res) {
-    // todo: find a better place to put the field names...well actually maybe it is okay here?...
-    // maybe specify what field doesn't match in error message, etc?
-    if (!hasAllProperties(req.body, ['date_created', 'date_due', 'title', 'description', 'tags', 'comments', 'subtasks'])) {
-        res.status(400).send('Task field names do not match expected');
+    const expectedFields = ['date_created', 'date_due', 'title', 'description', 'tags', 'comments', 'subtasks'];
+    var isValid;
+    var jsonText, jsonObj;
+    try {
+        jsonText = JSON.stringify(req.body);
+        jsonObj = JSON.parse(jsonText);
+        isValid = hasAllFields(jsonObj, expectedFields);
+    } catch (error) {
+        isValid = false;
+    }
+    console.log("attempting to POST with body: " + jsonText);
+
+    if (isValid) {
+        addTask(jsonObj);
+        res.send(jsonObj);
     } else {
-        console.log(req.body);
-        res.send(req.body);
+        res.status(400).send({'Received': jsonText,
+            'Error': 'Error processing POST body, must be valid JSON with fields: ' + expectedFields});
     }
 });
 
