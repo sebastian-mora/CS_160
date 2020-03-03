@@ -30,7 +30,8 @@
                     <!-- Holds all tasks -->
                     <div class="task-cards">
 
-                        <table class="table">
+                        <table id="task-table" class="table table-striped tablesorter">
+
                             <thead>
                                 <tr>
                                     <th scope="col"></th>
@@ -46,8 +47,8 @@
                                         <th scope="row">
                                             <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
                                         </th>
-                                        <td>Take out the trash</td>
-                                        <td>1/1/1</td>
+                                        <td> <%= i %> Take out the trash</td>
+                                        <td><%= i %></td>
                                         <td>Low</td>
                                     </tr>
                                     <% } %>
