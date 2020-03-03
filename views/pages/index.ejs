@@ -1,101 +1,68 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-      <%- include('../partials/head') -%>
-  </head>
 
-  <body class="">
+<head>
+    <!-- Adds all the importing of libs -->
+    <%- include('../partials/head') -%>
+</head>
+
+<body class="">
     <header>
-      <%- include('../partials/index/header') -%>
+
+        <%- include('../partials/index/header') -%>
     </header>
 
+    <!-- Start of sidebar -->
+    <%- include('../partials/index/sidebar') -%>
+        <!-- End of sidebar -->
 
-  <!-- Start of sidebar -->
-  <%- include('../partials/index/sidebar') -%>
-  <!-- End of sidebar -->
+        <!-- Task area -->
 
+        <div class="container" id="task-box">
+            <h1>Todo Tasks</h1>
 
-    <!-- Task area -->
+            <!-- Form submit overlay -->
+            <%- include('../partials/index/modal') -%>
 
-    <div class="container" id="task-box">
-      <h1>Todo Tasks</h1>
+                <!-- Dark nav bar used for searching and adding tasks -->
+                <%- include('../partials/index/task_menu') -%>
 
-      <div id="task-menu">
-        <nav id="task-nav" class="navbar navbar-expand-lg navbar-light bg-dark pull-right">
-            <form id="task-form-nav"class="form-inline ">
-              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-              <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#myModal">Add Task</button>
-              <a href="#">
-                <span class="glyphicon glyphicon-triangle-bottom"></span>
-              </a>
+                    <!-- Holds all tasks -->
+                    <div class="task-cards">
 
-            </form>
-          </nav>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Task Name</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Prority</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <% for(var i=0; i < 3; i++) { %>
+                                    <tr>
+                                        <th scope="row">
+                                            <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
+                                        </th>
+                                        <td>Take out the trash</td>
+                                        <td>1/1/1</td>
+                                        <td>Low</td>
+                                    </tr>
+                                    <% } %>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
         </div>
 
-      <%- include('../partials/index/modal') -%>
-
-      <!-- Holds all tasks -->
-      <div class="task-cards">
-
-        <div class="card">
-          <div class="card-body">
-            <p><strong> Finish HW </strong></p>
-            <div class="button-group">
-                </div>
-                <a href="#" class="btn btn-danger a-btn-slide-text">
-                   <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                    <span><strong>Delete</strong></span>
-                </a>
-                <a href="#" class="btn btn-primary a-btn-slide-text">
-                   <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                    <span><strong>Complete</strong></span>
-                </a>
-            </div>
+        <!-- end of task container -->
         </div>
+        <!-- End of task content -->
 
-        <div class="card">
-          <div class="card-body">
-              <p><strong> Take out trash </strong></p>
-              <div class="button-group">
-                  </div>
-                  <a href="#" class="btn btn-danger a-btn-slide-text">
-                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                      <span><strong>Delete</strong></span>
-                  </a>
-                  <a href="#" class="btn btn-primary a-btn-slide-text">
-                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                      <span><strong>Complete</strong></span>
-                  </a>
-              </div>
-          </div>
-        </div>
+</body>
 
-        <div class="card">
-          <div class="card-body">
-              <p><strong> Pay Rent </strong></p>
-              <div class="button-group">
-                  </div>
-                  <a href="#" class="btn btn-danger a-btn-slide-text">
-                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                      <span><strong>Delete</strong></span>
-                  </a>
-                  <a href="#" class="btn btn-primary a-btn-slide-text">
-                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                      <span><strong>Complete</strong></span>
-                  </a>
-              </div>
-          </div>
-        </div>
-
-
-      </div>
-
-      <!-- end of task container -->
-    </div>
-    <!-- End of task content -->
-
-
-  </body>
 </html>
