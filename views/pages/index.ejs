@@ -24,6 +24,9 @@
             <!-- Form submit overlay -->
             <%- include('../partials/index/modal') -%>
 
+            <!-- Indivual task overlay -->
+            <%- include('../partials/index/task_modal') -%>
+
                 <!-- Dark nav bar used for searching and adding tasks -->
                 <%- include('../partials/index/task_menu') -%>
 
@@ -50,6 +53,8 @@
                                         <td> <%= i %> Take out the trash</td>
                                         <td><%= i %></td>
                                         <td>Low</td>
+                                        <td><button type="button" class="btn-sm btn-info" data-toggle="modal" data-target="#taskModal">Info</button></td>
+
                                     </tr>
                                     <% } %>
                             </tbody>
