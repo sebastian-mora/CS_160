@@ -71,8 +71,8 @@ function lookupTask(uid) {
     };
 }
 
-// lookupTasks({createdAfter: iso8601-datetime-string, createdBefore: iso8601-datetime-string}) => list[json]
-// example usage: `lookupTasks()`, `lookupTasks({createdAfter='2020-02-24T15:16:30Z'})`
+// lookupTasks(createdAfter: date, createdBefore: date) => list[json]
+// example usage: `lookupTasks()`, `lookupTasks(createdAfter='2020-02-24T15:16:30.000Z', new Date())`
 function lookupTasks(createdAfter, createdBefore) {
     // todo: replace dummy data with actual lookup result (as json assembled from sql query)
     return [lookupTask(10)];
@@ -80,20 +80,31 @@ function lookupTasks(createdAfter, createdBefore) {
 
 
 // ========= ENDPOINT: FETCHING TASKS
-// todo: feels a little dangerous returning ALL tasks, so add some filters like `created_after`
+// todo: add optional request parameters for filtering such as `created_after` (and checked with isValidDatetimeStringRange())
 router.get('/', function(req, res) {
-    // todo: parse optional request parameters for filtering, and use `isValidDatetimeStringRange()`
     const tasksJson = lookupTasks();
-    res.send(tasksJson);
+    res.send({
+        "status": "success",
+        "data": tasksJson,
+        "message": "Fetched task with uid=" + req.params.uid
+    });
 });
 
 // can test like `curl -v http://127.0.0.1:3000/tasks/6`
 router.get('/:uid', function(req, res) {
     const taskJson = lookupTask(req.params.uid);
-    if (isEmptyObject(taskJson)) {
-        res.status(404).send('Task with uid=' + req.params.uid + " does not exist");
+    if (!isEmptyObject(taskJson)) {
+        res.send({
+            "status": "success",
+            "data": taskJson,
+            "message": "Fetched task with uid=" + req.params.uid
+        });
     } else {
-        res.send(taskJson);
+        res.status(404).send({
+            "status": "error",
+            "data": taskJson,
+            "message": "Could not find task with uid=" + req.params.uid
+        });
     }
 });
 
@@ -112,18 +123,20 @@ router.post('/', function(req, res) {
     } catch (error) {
         isValid = false;
     }
-    console.log("attempting to POST with body: " + jsonText);
+    console.log("Attempting to POST with body: " + jsonText);
 
     if (isValid) {
         addTask(jsonObj);
         res.send({
             "status": "success",
-            "message": "Created task: " + expectedFields
+            "data": jsonText,
+            "message": "Created task with fields " + expectedFields
         });
     } else {
         res.status(400).send({
             "status": "error",
-            "message": "Could not create task with fields " + expectedFields + " from given post body: " + jsonText
+            "data": jsonText,
+            "message": "Could not create task with fields " + expectedFields + " from given post body"
         });
     }
 });
