@@ -116,10 +116,15 @@ router.post('/', function(req, res) {
 
     if (isValid) {
         addTask(jsonObj);
-        res.send(jsonObj);
+        res.send({
+            "status": "success",
+            "message": "Created task: " + expectedFields
+        });
     } else {
-        res.status(400).send({'Received': jsonText,
-            'Error': 'Error processing POST body, must be valid JSON with fields: ' + expectedFields});
+        res.status(400).send({
+            "status": "error",
+            "message": "Could not create task with fields " + expectedFields + " from given post body: " + jsonText
+        });
     }
 });
 
