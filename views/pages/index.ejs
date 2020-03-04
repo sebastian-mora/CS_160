@@ -24,13 +24,17 @@
             <!-- Form submit overlay -->
             <%- include('../partials/index/modal') -%>
 
+            <!-- Indivual task overlay -->
+            <%- include('../partials/index/task_modal') -%>
+
                 <!-- Dark nav bar used for searching and adding tasks -->
                 <%- include('../partials/index/task_menu') -%>
 
                     <!-- Holds all tasks -->
                     <div class="task-cards">
 
-                        <table class="table">
+                        <table id="task-table" class="table table-striped tablesorter">
+
                             <thead>
                                 <tr>
                                     <th scope="col"></th>
@@ -46,9 +50,11 @@
                                         <th scope="row">
                                             <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
                                         </th>
-                                        <td>Take out the trash</td>
-                                        <td>1/1/1</td>
+                                        <td> <%= i %> Take out the trash</td>
+                                        <td><%= i %></td>
                                         <td>Low</td>
+                                        <td><button type="button" class="btn-sm btn-info" data-toggle="modal" data-target="#taskModal">Info</button></td>
+
                                     </tr>
                                     <% } %>
                             </tbody>
