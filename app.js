@@ -22,6 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/tasks', tasks);
+app.use('/tasks?', tasks);
 app.use('/tasks/:uid', tasks);
 
 // catch 404 and forwarding to error handler
