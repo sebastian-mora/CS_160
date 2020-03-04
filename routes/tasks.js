@@ -6,33 +6,11 @@ const router = express.Router();
 // ========= UTILITIES
 // note: all functions use datetimes STRICTLY of the format '2011-10-05T14:48:00.000Z'
 
-function getCurrentDate()   { return new Date(); }
 function getEpochDate()     { return new Date(0); }
-function isString(text)     { return typeof text === 'string' || text instanceof String; }
+function getCurrentDate()   { return new Date(); }
 function isDate(date)       { return typeof date && date instanceof Date; }
+function isString(text)     { return typeof text === 'string' || text instanceof String; }
 
-function isValidISODateString(text) {
-    const date = new Date(text);
-    return isString(text) && isDate(date) && text === date.toISOString();
-}
-// throwErrorIfInvalidJSON(jsonText: string) => bool
-function isValidJSON(jsonText) {
-    try {
-        JSON.parse(text);
-        return true;
-    } catch (error) {
-        return false;
-    }
-}
-function hasSameNumKeys(obj1, obj2) {
-    return Object.keys(obj1).length === Object.keys(obj1).length;
-}
-function isEmptyObject(obj) {
-    return obj === null ||
-        obj === undefined ||
-        Array.isArray(obj) ||
-        typeof obj !== 'object' || Object.getOwnPropertyNames(obj).length === 0;
-}
 // hasExactFields(obj: object, fieldNames: array[string]) => bool
 // ex: hasExactFields({'foo': 1, 'bar': 2}, ...['foo', 'bar']) => true
 // ex: hasExactFields({'foo': 1, 'bar': 2}, ...['foo', 'bar', 'baz']) => false
@@ -48,6 +26,16 @@ function hasExactFields(obj, fieldNames) {
         }
     }
     return true;
+}
+function isValidISODateString(text) {
+    const date = new Date(text);
+    return isString(text) && isDate(date) && text === date.toISOString();
+}
+function isEmptyObject(obj) {
+    return obj === null ||
+        obj === undefined ||
+        Array.isArray(obj) ||
+        typeof obj !== 'object' || Object.getOwnPropertyNames(obj).length === 0;
 }
 
 
@@ -89,13 +77,13 @@ function lookupTasks(createdAfter, createdBefore) {
 // ========= ENDPOINTS
 
 /*
---- Fetch ONE task ---
-GET <host>/tasks/
-    <unique-integer-id>
+--- Fetch a Task ---
+Fetch a single task, with nonexistence treated as a 404 error
 
-Notes:
-* Fetch a single task, with nonexistence treated as a 404 error
-* Eg: curl -v http://127.0.0.1:3000/tasks
+Syntax:
+    GET <host>/tasks/<unique-integer-id>
+Example Usage:
+    curl -v http://127.0.0.1:3000/tasks
 */
 router.get('/:uid', function(req, res) {
     const taskJson = lookupTask(req.params.uid);
@@ -115,12 +103,13 @@ router.get('/:uid', function(req, res) {
 });
 
 /*
---- Fetch ALL tasks ---
-syntax: GET <host>/tasks
+--- Fetch All Tasks ---
+Fetches all saved tasks in database, no matter how many
 
-Notes:
-* Fetches ALL the saved tasks in the database, no matter how large in numerous
-* Eg: curl -v http://127.0.0.1:3000/tasks
+Syntax:
+    GET <host>/tasks
+Example Usage:
+    curl --location --request GET 'http://127.0.0.1:3000/tasks'
 */
 router.get('/', function(req, res) {
     const taskJsons = lookupTasks(getEpochDate(), getCurrentDate());
@@ -132,13 +121,14 @@ router.get('/', function(req, res) {
 });
 
 /*
---- Fetch tasks WITHIN dates ---
-GET <host>/tasks?
-    created_after=<iso-datetime>&created_before=<iso-datetime>
+--- Fetch Tasks Within Time Span---
+Fetches all tasks between given (inclusive) start and end dates
 
-Notes:
-* Fetches all the tasks within given (inclusive) dates
-* Eg: curl -v 'http://127.0.0.1:3000/tasks?created_after=2020-02-24T15:16:30.000Z&created_before=2020-02-28T15:16:30.000Z'
+Syntax:
+    GET <host>/tasks?created_after=<iso-datetime>&created_before=<iso-datetime>
+Example Usage:
+    curl --location --request GET \
+    'http://127.0.0.1:3000/tasks?created_after=2020-02-24T15:16:30.000Z&created_before=2020-02-28T15:16:30.000Z'
 */
 router.get('/?', function(req, res) {
     const expectedNumParams = 2;
@@ -161,9 +151,11 @@ router.get('/?', function(req, res) {
 });
 
 /*
---- Creating a new task ---
-POST <host>/tasks
-    @body={
+--- Create Task ---
+Creates a new task, with a uid that is decided upon writing to the database
+
+Syntax:
+    POST <host>/tasks @body={
         date_created: <iso-datetime>,
         date_due:     <iso-datetime>,
         title:        <string>,
@@ -172,10 +164,18 @@ POST <host>/tasks
         comments:     <array[string]>,
         subtasks:     <array[string]>
     }
-
-Notes:
-* Creates a new task, with a uid that is decided upon writing to the database
-* Eg: curl -v http://127.0.0.1:3000/tasks -H 'Accept:application/json' -d '{\"date_created\":\"2020-02-24T15:16:30.000Z\",\"date_due\":\"2020-02-25T15:16:30.000Z\",\"title\":\"TITLE\",\"description\":\"DETAILS\",\"tags\":[],\"comments\":[],\"subtasks\":[]}'
+Example Usage:
+    curl --location --request POST 'http://127.0.0.1:3000/tasks' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+        "date_created": "2020-02-24T15:16:30.000Z",
+        "date_due": "2020-02-25T15:16:30.000Z",
+        "title": "TITLE",
+        "description": "DETAILS",
+        "tags": [],
+        "comments": [],
+        "subtasks": []
+    }'
 */
 router.post('/', function(req, res) {
     // todo: add more validation, as of course we only want good data entering the database
@@ -205,6 +205,7 @@ router.post('/', function(req, res) {
         });
     }
 });
+
 
 // ========= EXPORTS
 module.exports = router;
