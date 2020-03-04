@@ -86,10 +86,42 @@ function lookupTasks(createdAfter, createdBefore) {
 }
 
 
-// ========= ENDPOINT: FETCHING TASKS
+// ========= ENDPOINTS
 
-// fetch ALL the tasks...warning: this could be huge!
-// ex: curl -v http://127.0.0.1:3000/tasks
+/*
+--- Fetch ONE task ---
+GET <host>/tasks/
+    <unique-integer-id>
+
+Notes:
+* Fetch a single task, with nonexistence treated as a 404 error
+* Eg: curl -v http://127.0.0.1:3000/tasks
+*/
+router.get('/:uid', function(req, res) {
+    const taskJson = lookupTask(req.params.uid);
+    if (!isEmptyObject(taskJson)) {
+        res.send({
+            "status": "success",
+            "message": "Fetched task with uid=" + req.params.uid,
+            "data": taskJson
+        });
+    } else {
+        res.status(404).send({
+            "status": "error",
+            "message": "No task with uid=" + req.params.uid + " found",
+            "data": taskJson
+        });
+    }
+});
+
+/*
+--- Fetch ALL tasks ---
+syntax: GET <host>/tasks
+
+Notes:
+* Fetches ALL the saved tasks in the database, no matter how large in numerous
+* Eg: curl -v http://127.0.0.1:3000/tasks
+*/
 router.get('/', function(req, res) {
     const taskJsons = lookupTasks(getEpochDate(), getCurrentDate());
     res.send({
@@ -99,9 +131,15 @@ router.get('/', function(req, res) {
     });
 });
 
-// fetch all tasks (if any) within given EXPLICIT datetime range
-// note: validation is ONLY done on parameters, date ranges that dont make sense or have no tasks simply return empty array
-// ex: curl -v 'http://127.0.0.1:3000/tasks?created_after=2020-02-24T15:16:30.000Z&created_before=2020-02-28T15:16:30.000Z'
+/*
+--- Fetch tasks WITHIN dates ---
+GET <host>/tasks?
+    created_after=<iso-datetime>&created_before=<iso-datetime>
+
+Notes:
+* Fetches all the tasks within given (inclusive) dates
+* Eg: curl -v 'http://127.0.0.1:3000/tasks?created_after=2020-02-24T15:16:30.000Z&created_before=2020-02-28T15:16:30.000Z'
+*/
 router.get('/?', function(req, res) {
     const expectedNumParams = 2;
     const start = req.query.created_after;
@@ -122,28 +160,25 @@ router.get('/?', function(req, res) {
     }
 });
 
-// ex: curl -v http://127.0.0.1:3000/tasks/6
-router.get('/:uid', function(req, res) {
-    const taskJson = lookupTask(req.params.uid);
-    if (!isEmptyObject(taskJson)) {
-        res.send({
-            "status": "success",
-            "message": "Fetched task with uid=" + req.params.uid,
-            "data": taskJson
-        });
-    } else {
-        res.status(404).send({
-            "status": "error",
-            "message": "No task with uid=" + req.params.uid + " found",
-            "data": taskJson
-        });
+/*
+--- Creating a new task ---
+POST <host>/tasks
+    @body={
+        date_created: <iso-datetime>,
+        date_due:     <iso-datetime>,
+        title:        <string>,
+        description:  <string>,
+        tags:         <array[string]>,
+        comments:     <array[string]>,
+        subtasks:     <array[string]>
     }
-});
 
-
-// ========= ENDPOINT: CREATING TASK
-// ex: curl -v http://127.0.0.1:3000/tasks -H 'Accept:application/json' -d '{\"date_created\":\"2020-02-24T15:16:30.000Z\",\"date_due\":\"2020-02-25T15:16:30.000Z\",\"title\":\"TITLE\",\"description\":\"DETAILS\",\"tags\":[],\"comments\":[],\"subtasks\":[]}'
+Notes:
+* Creates a new task, with a uid that is decided upon writing to the database
+* example usage: curl -v http://127.0.0.1:3000/tasks -H 'Accept:application/json' -d '{\"date_created\":\"2020-02-24T15:16:30.000Z\",\"date_due\":\"2020-02-25T15:16:30.000Z\",\"title\":\"TITLE\",\"description\":\"DETAILS\",\"tags\":[],\"comments\":[],\"subtasks\":[]}'
+*/
 router.post('/', function(req, res) {
+    // todo: add more validation, as of course we only want good data entering the database
     const expectedFields = ['date_created', 'date_due', 'title', 'description', 'tags', 'comments', 'subtasks'];
     var isValid = true;
     var jsonText, jsonObj;
