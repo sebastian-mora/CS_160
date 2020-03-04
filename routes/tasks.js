@@ -180,27 +180,28 @@ Example Usage:
 router.post('/', function(req, res) {
     // todo: add more validation, as of course we only want good data entering the database
     const expectedFields = ['date_created', 'date_due', 'title', 'description', 'tags', 'comments', 'subtasks'];
-    var isValid, jsonText, jsonObj;
+    var isValid, textPayload, taskJson;
     try {
-        jsonText = JSON.stringify(req.body);
-        isValid = hasExactFields(JSON.parse(jsonText), expectedFields);
+        textPayload = JSON.stringify(req.body);
+        taskJson = JSON.parse(textPayload);
+        isValid = hasExactFields(taskJson, expectedFields);
     } catch (error) {
         console.log(error);
         isValid = false;
     }
 
     if (isValid) {
-        addTask(jsonObj);
+        addTask(taskJson);
         res.send({
             "status": "success",
             "message": "Created task with fields: " + expectedFields,
-            "data": jsonText
+            "data": textPayload
         });
     } else {
         res.status(400).send({
             "status": "error",
             "message": "Expected exact fields: " + expectedFields,
-            "data": jsonText
+            "data": textPayload
         });
     }
 });
