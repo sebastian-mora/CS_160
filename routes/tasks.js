@@ -67,15 +67,15 @@ function lookupTask(uid) {
         return {};
     }
     return {
-        'uid': uid,
-        'date_created': '2020-02-24T15:16:30.000Z',
-        'date_due':     '2020-02-25T15:16:30.000Z',
-        'title':        'my dummy task title',
-        'description':  'my dummy description',
-        'priority': 'high',
-        'tags':     [],
-        'comments': [],
-        'subtasks': []
+        "uid": uid,
+        "date_created": "2020-02-24T15:16:30.000Z",
+        "date_due":     "2020-02-25T15:16:30.000Z",
+        "title":        "my dummy task title",
+        "description":  "my dummy description",
+        "priority": "high",
+        "tags":     [],
+        "comments": [],
+        "subtasks": []
     };
 }
 
@@ -101,7 +101,7 @@ router.get('/', function(req, res) {
 
 // fetch all tasks (if any) within given EXPLICIT datetime range
 // note: validation is ONLY done on parameters, date ranges that dont make sense or have no tasks simply return empty array
-// ex: curl -v http://127.0.0.1:3000/tasks?created_after=2020-02-24T15:16:30.000Z&created_before=2020-02-28T15:16:30.000Z
+// ex: curl -v 'http://127.0.0.1:3000/tasks?created_after=2020-02-24T15:16:30.000Z&created_before=2020-02-28T15:16:30.000Z'
 router.get('/?', function(req, res) {
     const expectedNumParams = 2;
     const start = req.query.created_after;
@@ -145,7 +145,7 @@ router.get('/:uid', function(req, res) {
 // ex: curl -v http://127.0.0.1:3000/tasks -H 'Accept:application/json' -d '{\"date_created\":\"2020-02-24T15:16:30.000Z\",\"date_due\":\"2020-02-25T15:16:30.000Z\",\"title\":\"TITLE\",\"description\":\"DETAILS\",\"tags\":[],\"comments\":[],\"subtasks\":[]}'
 router.post('/', function(req, res) {
     const expectedFields = ['date_created', 'date_due', 'title', 'description', 'tags', 'comments', 'subtasks'];
-    var isValid;
+    var isValid = true;
     var jsonText, jsonObj;
     try {
         jsonText = JSON.stringify(req.body);
