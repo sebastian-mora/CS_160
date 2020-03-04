@@ -180,13 +180,12 @@ Example Usage:
 router.post('/', function(req, res) {
     // todo: add more validation, as of course we only want good data entering the database
     const expectedFields = ['date_created', 'date_due', 'title', 'description', 'tags', 'comments', 'subtasks'];
-    var isValid = true;
-    var jsonText, jsonObj;
+    var isValid, jsonText, jsonObj;
     try {
         jsonText = JSON.stringify(req.body);
-        jsonObj = JSON.parse(jsonText);
-        isValid = hasExactFields(jsonObj, expectedFields);
+        isValid = hasExactFields(JSON.parse(jsonText), expectedFields);
     } catch (error) {
+        console.log(error);
         isValid = false;
     }
 
