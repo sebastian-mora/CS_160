@@ -113,7 +113,6 @@ Example Usage:
 */
 router.get('/', function(req, res) {
     const taskJsons = lookupTasks(getEpochDate(), getCurrentDate());
-    console.log(taskJsons);
     const message =  "Fetched ALL " + taskJsons.length + " task(s)";
     // res.send({
     //     "status": "success",
@@ -182,8 +181,10 @@ Example Usage:
 */
 router.post('/', function(req, res) {
     // todo: add more validation, as of course we only want good data entering the database
-    const expectedFields = ['date_created', 'date_due', 'title', 'description', 'tags', 'comments', 'subtasks'];
+    const expectedFields = ['date_due', 'title', 'description', 'tags', 'priority'];
     var isValid, textPayload, taskJson;
+
+
     try {
         textPayload = JSON.stringify(req.body);
         taskJson = JSON.parse(textPayload);
@@ -200,6 +201,7 @@ router.post('/', function(req, res) {
             "message": "Created task with fields: " + expectedFields,
             "data": textPayload
         });
+
     } else {
         res.status(400).send({
             "status": "error",

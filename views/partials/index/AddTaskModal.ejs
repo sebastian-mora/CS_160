@@ -12,22 +12,39 @@
 
         <!-- Modal body -->
         <div class="modal-body">
-          <form>
+          <form action="/task" enctype='application/json' method="POST" name="taskForm">
               <div class="form-group">
-                <label for="task_name">Task Name</label>
-                <input type="text" class="form-control" id="task_name" placeholder="Enter task name">
-              </div>
-              <div class="form-group">
-                <label for="task_des">Description</label>
-                <input type="text" class="form-control" id="task_des" placeholder="Description">
-              </div>
-            </form>
-        </div>
 
-        <!-- Modal footer -->
-        <div class="modal-footer">
-          <button class="btn btn-success my-2 my-sm-0" type="submit">Add</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+
+                <label for="title">Task Title</label>
+                <input type="text" class="form-control" name="title" id="title" placeholder="Enter task name">
+                <br>
+                <br>
+                <label for="date_due">Date Due</label>
+                <input type="date" id="date_due" name="date_due">
+                <br>
+                <br>
+
+                <label for="description">Description</label>
+                <input type="text" class="form-control" name="description" id="description" placeholder="Description">
+
+
+                <label for="priority">Choose a priority:</label>
+                <select id="priority" name="priority">
+                  <option value="high">High</option>
+                  <option value="meidum">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+                <br>
+
+
+                <label for="tags">Task Tags</label>
+                <input type="text" class="form-control" name="tags" id="tags" placeholder="none">
+              </div>
+
+              <input class="btn btn-success my-2 my-sm-0" value="Submit" type="submit" onclic()">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </form>
         </div>
 
       </div>
