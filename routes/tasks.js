@@ -113,11 +113,14 @@ Example Usage:
 */
 router.get('/', function(req, res) {
     const taskJsons = lookupTasks(getEpochDate(), getCurrentDate());
-    res.send({
-        "status": "success",
-        "data": taskJsons,
-        "message": "Fetched ALL " + taskJsons.length + " task(s)"
-    });
+    console.log(taskJsons);
+    const message =  "Fetched ALL " + taskJsons.length + " task(s)";
+    // res.send({
+    //     "status": "success",
+    //     "data": taskJsons,
+    //     "message": "Fetched ALL " + taskJsons.length + " task(s)"
+    // });
+    res.render('pages/index.ejs', {tasks:taskJsons});
 });
 
 /*
