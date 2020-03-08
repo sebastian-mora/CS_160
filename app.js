@@ -22,7 +22,7 @@ let database = mysql.createConnection({
   host: "localhost",
   user: "root",
   database: "cs160", // Enter the name of your database
-  password: "YOURPASS" // Enter your password
+  password: "yourPass" // Enter your password
 });
 
 database.connect(function(error) {
@@ -34,6 +34,30 @@ database.connect(function(error) {
   }
 });
 
+//Test Query
+//let query = "SELECT * FROM task INNER JOIN subtasks ON (task.task_id = subtasks.task_id OR (task.task_id = NULL and subtasks.task_id = NULL)) INNER JOIN comments on task.task_id = comments.task_id";
+
+//Query to get all subtasks
+let query = "SELECT * FROM task";
+
+//Query to insert a task into the Database
+//let query = `INSERT INTO task (date_created,date_due,title,description,priority) VALUE(` + "curdate(),"  + "curdate()," + `"Testing to see if this insertion works"`+ ","+  `"Insertion testing"` + "," + "2" + `);`;
+
+//Query to update task by task_id
+//let query = 'UPDATE task SET description =' + '"Testing update on description attribute"' + 'WHERE task_id =1';
+
+//Query to delete task by task_id
+//let query = 'DELETE FROM task WHERE task_id =' + "5";
+
+database.query(query, function(error, result) {
+  if (error) {
+    console.log("Error in studyset query");
+    console.log(error);
+  } else {
+    console.log(result);
+  }
+});
+
 app.use('/', routes);
 app.use('/users', users);
 
@@ -41,20 +65,11 @@ app.use('/users', users);
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
-    let query = "SELECT * FROM accounts";
-    database.query(query, function(error, result) {
-      if (error) {
-        console.log("Error in studyset query");
-        console.log(error);
-      } else {
-        console.log(result);
-      }
-    });
-    next(err);
+
+
 });
 
 /// error handlers
-
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
