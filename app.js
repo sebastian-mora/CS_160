@@ -49,14 +49,43 @@ let query = "SELECT * FROM task";
 //Query to delete task by task_id
 //let query = 'DELETE FROM task WHERE task_id =' + "5";
 
-database.query(query, function(error, result) {
-  if (error) {
-    console.log("Error in studyset query");
-    console.log(error);
-  } else {
-    console.log(result);
-  }
-});
+function addTask(taskJson){
+  test = {
+        "uid": 1,
+        "date_created": "2020-02-24T15:16:30.000Z",
+        "date_due":     "2020-02-25T15:16:30.000Z",
+        "title":        "my dummy task title",
+        "description":  "my dummy description",
+        "priority": "high",
+        "tags":     [],
+        "comments": [],
+        "subtasks": []
+    }
+  let query = `INSERT INTO task (date_created,date_due,title,description,priority) VALUES("` + test.date_created + `","` + test.date_due + `","` + test.title + `","` + test.description + `","` + test.priority +`")`;
+  database.query(query, function(error, result) {
+    if (error) {
+      console.log("Error in studyset query");
+      console.log(error);
+    } else {
+      console.log(result);
+    }
+  });
+}
+
+function lookupTask(uid){
+  uid = 1;
+  let query = 'SELECT * FROM task WHERE uid="'+uid +'"';
+  database.query(query, function(error, result) {
+    if (error) {
+      console.log("Error in task query");
+      console.log(error);
+    } else {
+      console.log(result);
+    }
+  });
+}
+
+lookupTask(1);
 
 app.use('/', routes);
 app.use('/users', users);
