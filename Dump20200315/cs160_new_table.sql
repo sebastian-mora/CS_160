@@ -16,28 +16,30 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `tags`
+-- Table structure for table `new_table`
 --
 
-DROP TABLE IF EXISTS `tags`;
+DROP TABLE IF EXISTS `new_table`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tags` (
-  `idtags` int(11) NOT NULL,
-  `tag_desc` varchar(45) DEFAULT NULL,
-  `task_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`idtags`)
+CREATE TABLE `new_table` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `date_created` varchar(45) DEFAULT NULL,
+  `date_due` varchar(45) DEFAULT NULL,
+  `title` varchar(45) DEFAULT NULL,
+  `description` varchar(45) DEFAULT NULL,
+  `priority` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tags`
+-- Dumping data for table `new_table`
 --
 
-LOCK TABLES `tags` WRITE;
-/*!40000 ALTER TABLE `tags` DISABLE KEYS */;
-INSERT INTO `tags` VALUES (1,'Test tag',1);
-/*!40000 ALTER TABLE `tags` ENABLE KEYS */;
+LOCK TABLES `new_table` WRITE;
+/*!40000 ALTER TABLE `new_table` DISABLE KEYS */;
+/*!40000 ALTER TABLE `new_table` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-02-27 16:34:25
+-- Dump completed on 2020-03-15 22:39:54

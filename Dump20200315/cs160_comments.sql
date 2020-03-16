@@ -16,31 +16,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `task`
+-- Table structure for table `comments`
 --
 
-DROP TABLE IF EXISTS `task`;
+DROP TABLE IF EXISTS `comments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `task` (
-  `task_id` int(11) NOT NULL AUTO_INCREMENT,
-  `date_created` varchar(255) DEFAULT NULL,
-  `date_due` varchar(255) DEFAULT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `priority` int(11) DEFAULT NULL,
-  PRIMARY KEY (`task_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `comments` (
+  `comments_id` int(11) NOT NULL,
+  `comments_desc` varchar(45) DEFAULT NULL,
+  `task_id` int(11) NOT NULL,
+  PRIMARY KEY (`comments_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `task`
+-- Dumping data for table `comments`
 --
 
-LOCK TABLES `task` WRITE;
-/*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES (1,'2020-02-27','2020-02-27','Test task','Testing adding a task',3),(2,'2020-02-27','2020-02-27','Finish insertion test','Inserting elements into db',3),(3,'2020-02-27','2020-02-27','Create testing inputs for database','Scenario testing for db',3);
-/*!40000 ALTER TABLE `task` ENABLE KEYS */;
+LOCK TABLES `comments` WRITE;
+/*!40000 ALTER TABLE `comments` DISABLE KEYS */;
+INSERT INTO `comments` VALUES (1,'Test comment',1);
+/*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -52,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-02-27 16:34:24
+-- Dump completed on 2020-03-15 22:39:54
