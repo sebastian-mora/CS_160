@@ -1,30 +1,76 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Task App</title>
-  <link rel="stylesheet" href="/css/index.css">
-    </head>
-  <body>
-      <h1>Welcome Todo list</h1>
 
-      <div class="left-nav">
-        <ul>
-          <li>Inbox</li>
+<head>
+    <!-- Adds all the importing of libs -->
+    <%- include('../partials/Head') -%>
+</head>
 
-          <div class="Projects">
-               <!-- Add build for hastags -->
-          </div>
+<body class="">
+    <header>
 
-        </ul>
-      </div>
-      <div class="tasks">
-          <ul>
-            <!-- This will be an ejs template -->
-            <li>Item 1</li>
-            <li>Item 2</li>
-            <li>Item 3</li>
-          </ul>
-      </div>
-  </body>
+        <%- include('../partials/index/Header') -%>
+    </header>
+
+    <!-- Start of sidebar -->
+    <%- include('../partials/index/Sidebar') -%>
+        <!-- End of sidebar -->
+
+        <!-- Task area -->
+
+        <div class="container" id="task-box">
+            <h1>Todo Tasks</h1>
+
+            <!-- Form submit overlay -->
+            <%- include('../partials/index/AddTaskModal') -%>
+
+
+
+                <!-- Dark nav bar used for searching and adding tasks -->
+                <%- include('../partials/index/TaskMenu') -%>
+
+                <% tasks.forEach(function(task, i) { %>
+                  <%- include('../partials/index/TaskModal', {modal_name:"taskModal"+i, task:task}) -%>
+              <% }); %>
+
+                    <!-- Holds all tasks -->
+                    <div class="task-cards">
+
+                        <table id="task-table" class="table table-striped tablesorter">
+
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Task Name</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Prority</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                              <% tasks.forEach(function(task, i) { %>
+                                 <td><%= task.date_created %> </td>
+                                 <td><%= task.title %> </td>
+                                 <td><%= task.date_due %> </td>
+                                 <td><%= task.priority %> </td>
+                                 <td><button type="button" class="btn-sm btn-info" data-toggle="modal" data-target="#taskModal<%=i%>">Info</button></td>
+                                 <!-- Indivual task overlay -->
+
+                             <% }); %>
+                            </tbody>
+
+                        </table>
+
+
+
+                    </div>
+
+        </div>
+
+        <!-- end of task container -->
+        </div>
+        <!-- End of task content -->
+
+</body>
+
 </html>

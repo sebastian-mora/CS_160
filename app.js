@@ -1,11 +1,13 @@
-var express = require('express');
-var path = require('path');
-var mysql = require('mysql');
+var express    = require('express');
+var path       = require('path');
+var mysql      = require('mysql');
 var bodyParser = require('body-parser');
+
 const port = 3000;
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
+var users  = require('./routes/users');
+var tasks  = require('./routes/tasks');
 
 var app = express();
 
@@ -89,8 +91,11 @@ lookupTask(1);
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/tasks', tasks);
+app.use('/tasks?', tasks);
+app.use('/tasks/:uid', tasks);
 
-/// catch 404 and forwarding to error handler
+// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
@@ -121,4 +126,4 @@ app.use(function(err, req, res, next) {
     });
 });
 
-app.listen(port, () => console.log(`CS-160 app listening on port ${port}!`))
+app.listen(port, () => console.log(`CS-160 app listening on port ${port}!`));
