@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 const port = 3000;
 
 var routes = require('./routes/index');
-var users  = require('./routes/users');
+var users  = require('./routes/user');
 var tasks  = require('./routes/tasks');
 
 var app = express();
