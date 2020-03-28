@@ -42,6 +42,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col"></th>
+                                    <th scope="col">Due Date</th>
                                     <th scope="col">Task Name</th>
                                     <th scope="col">Date</th>
                                     <th scope="col">Prority</th>
@@ -50,11 +51,19 @@
 
                             <tbody>
                               <% tasks.forEach(function(task, i) { %>
+
+                                <th scope="col">
+                                  <form action="/tasks/complete" method="post">
+                                    <input type="hidden" id="uid" name="uid" value="123">
+                                    <input type="submit" value="X">
+                                  </form>
+                                </th>
                                  <td><%= task.date_created %> </td>
                                  <td><%= task.title %> </td>
                                  <td><%= task.date_due %> </td>
                                  <td><%= task.priority %> </td>
                                  <td><button type="button" class="btn-sm btn-info" data-toggle="modal" data-target="#taskModal<%=i%>">Info</button></td>
+                                 <td style="display: none;">asdasd</td>
                                  <!-- Indivual task overlay -->
 
                              <% }); %>

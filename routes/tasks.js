@@ -212,5 +212,11 @@ router.post('/', function(req, res) {
 });
 
 
+// DELETE ROUTE
+router.post('/complete', function(req, res) {
+  uid = req.body['uid']
+  // TODO ADD logic to complete a task
+});
+
 // ========= EXPORTS
 module.exports = router;
