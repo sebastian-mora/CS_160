@@ -1,0 +1,56 @@
+
+  <!-- The Modal -->
+  <div class="modal fade" id="<%=modal_name%>" tabindex="-1" role="dialog" aria-labelledby="<%=modal_name%>Label" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Edit task</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <form action="/task" enctype='application/json' method="POST" name="taskForm">
+              <div class="form-group">
+
+
+
+
+                <label for="title">Task Title</label>
+                <input type="text" class="form-control" name="title" id="title" placeholder="<%= task.title %>">
+                <br>
+                <br>
+                <label for="date_due">Date Due</label>
+                <input type="date" id="date_due" onfocus="(this.type='date')" name="date_due" placeholder="<%= task.date_due %>">
+                <br>
+                <br>
+
+                <label for="description">Description</label>
+                <input type="text" class="form-control" name="description" id="description" placeholder="<%=task.description%>">
+
+
+                <label for="priority">Choose a priority:</label>
+                <select id="priority" name="priority" placeholder="<%= task.priority %>">
+                  <option value="high">High</option>
+                  <option value="meidum">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+                <br>
+
+
+                <label for="tags">Task Tags</label>
+                <input type="text" class="form-control" name="tags" id="tags" placeholder="none">
+              </div>
+
+              <input class="btn btn-success my-2 my-sm-0" value="Submit" type="submit">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+<!-- End of Modal -->

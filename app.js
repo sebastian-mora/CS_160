@@ -6,8 +6,9 @@ var bodyParser = require('body-parser');
 const port = 3000;
 
 var routes = require('./routes/index');
-var users  = require('./routes/users');
+var users  = require('./routes/user');
 var tasks  = require('./routes/tasks');
+var login  = require('./routes/login');
 
 var app = express();
 
@@ -94,6 +95,7 @@ app.use('/users', users);
 app.use('/tasks', tasks);
 app.use('/tasks?', tasks);
 app.use('/tasks/:uid', tasks);
+app.use('/login', login);
 
 // catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
