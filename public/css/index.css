@@ -120,4 +120,28 @@ a.btn:hover {
      -moz-transition-duration: 0.5s;
      -o-transition-duration: 0.5s;
  }
+
+
+/* Task Modal */
+
+div.task-progress{
+    padding-left: 15%;
+    margin-top: 1%;
+}
+
+
+div.task-progress progress{
+
+
+}
+
+div.modal progress::-moz-progress-bar { background: #7386D5;  }
+
+
+
+/* End of task Modal */
+
+
+
+
 /* end of individual tasks */
