@@ -15,20 +15,10 @@ database.connect(function(error) {
     console.log("Connected to database");
   }
 });
-
-function addTask(taskJson){
-  test = {
-        "uid": 1,
-        "date_created": "2020-02-24T15:16:30.000Z",
-        "date_due":     "2020-02-25T15:16:30.000Z",
-        "title":        "my dummy task title",
-        "description":  "my dummy description",
-        "priority": "high",
-        "tags":     [],
-        "comments": [],
-        "subtasks": []
-    }
-  let query = `INSERT INTO task (date_created,date_due,title,description,priority) VALUES("` + test.date_created + `","` + test.date_due + `","` + test.title + `","` + test.description + `","` + test.priority +`")`;
+// todo: add errors, we want the tasks route to be able to report the error in the response message, rather than logging
+// here...perhaps errors or a status string, that if not empty indicates the error that occurred?
+function addTask(taskJson) {
+  let query = `INSERT INTO task (date_created,date_due,title,description,priority) VALUES("` + taskJson.date_created + `","` + taskJson.date_due + `","` + taskJson.title + `","` + taskJson.description + `","` + taskJson.priority +`")`;
   database.query(query, function(error, result) {
     if (error) {
       console.log("Error in task query");
@@ -39,11 +29,24 @@ function addTask(taskJson){
   });
 }
 
+function updateTask(taskJson) {
+  let query = `UPDATE task (uid, date_created,date_due,title,description,priority) VALUES("` + taskJson.uid + taskJson.date_created + `","` + taskJson.date_due + `","` + taskJson.title + `","` + taskJson.description + `","` + taskJson.priority +`")`;
+  database.query(query, function(error, result) {
+    if (error) {
+      console.log("Error updating task query");
+      console.log(error);
+    } else {
+      console.log(result);
+    }
+  });
+}
+
+// lookupTask(uid: int) => json | {} if not found
 function lookupTask(uid){
-  let query = 'SELECT * FROM task WHERE uid="'+uid +'"';
+  let query = 'SELECT * FROM task WHERE uid="' + uid + '" LIMIT 1';
   database.query(query, function(error, result) {
     if (error) {
-      console.log("Error in task query");
+      console.log("Error looking up task query");
       console.log(error);
     } else {
       console.log(result);
@@ -51,11 +54,12 @@ function lookupTask(uid){
   });
 }
 
-function deleteTask(uid){
-  let query = 'DELETE FROM task WHERE task_id ="'+uid+'"';
+// lookupTasks(createdAfter: date, createdBefore: date) => list[json] | {} if none in time range
+function lookupTasks(createdAfter, createdBefore){
+  let query = 'SELECT * FROM task WHERE date_created BETWEEN "' + createdAfter.toISOString() +'" AND "' + createdBefore.toISOString() + '"';
   database.query(query, function(error, result) {
     if (error) {
-      console.log("Error in task query");
+      console.log("Error in looking up multiple tasks query");
       console.log(error);
     } else {
       console.log(result);

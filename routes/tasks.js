@@ -42,38 +42,6 @@ function isEmptyObject(obj) {
 // ========= DATABASE
 // note: as these are internal methods, they assume valid input
 
-// addTask(taskJson: json) => bool
-function addTask(taskJson) {
-    // todo: replace with actual database write
-    return true;
-}
-
-// lookupTask(uid: int) => json | {} if not found
-function lookupTask(uid) {
-    // todo: replace dummy data with actual lookup result (as json assembled from sql query)
-    if (uid < 0) {
-        return {};
-    }
-    return {
-        "uid": uid,
-        "date_created": "2020-02-24T15:16:30.000Z",
-        "date_due":     "2020-02-25T15:16:30.000Z",
-        "title":        "my dummy task title",
-        "description":  "my dummy description",
-        "priority": "high",
-        "tags":     [],
-        "comments": [],
-        "subtasks": []
-    };
-}
-
-// lookupTasks(createdAfter: date, createdBefore: date) => list[json] | {} if none in time range
-function lookupTasks(createdAfter, createdBefore) {
-    // todo: replace dummy data with actual lookup result (as json assembled from sql query)
-    return [lookupTask(6)];
-}
-
-
 // ========= ENDPOINTS
 
 /*
@@ -103,6 +71,47 @@ router.get('/:uid', function(req, res) {
 });
 
 /*
+--- Edit a Task ---
+Fetch a single task, with nonexistence treated as a 404 error
+
+Syntax:
+    GET <host>/tasks/<unique-integer-id>
+Example Usage:
+    curl -v http://127.0.0.1:3000/tasks
+*/
+router.post('/:uid', function(req, res) {
+    // todo: add more validation, as of course we only want good data entering the database
+    const expectedFields = ['date_due', 'title', 'description', 'tags', 'priority', 'status'];
+    var isValid, textPayload, taskJson;
+
+    try {
+        textPayload = JSON.stringify(req.body);
+        taskJson = JSON.parse(textPayload);
+        isValid = hasExactFields(taskJson, expectedFields);
+    } catch (error) {
+        console.log(error);
+        isValid = false;
+    }
+
+    if (isValid) {
+        addTask(taskJson);
+        res.send({
+            "status": "success",
+            "message": "Created task with fields: " + expectedFields,
+            "data": textPayload
+        });
+
+    } else {
+        res.status(400).send({
+            "status": "error",
+            "message": "Expected exact fields: " + expectedFields,
+            "data": textPayload
+        });
+    }
+});
+
+
+/*
 --- Fetch All Tasks ---
 Fetches all saved tasks in database, no matter how many
 
@@ -121,6 +130,7 @@ router.get('/', function(req, res) {
     // });
     res.render('pages/index.ejs', {tasks:taskJsons});
 });
+
 
 /*
 --- Fetch Tasks Within Time Span---
@@ -160,6 +170,7 @@ Syntax:
     POST <host>/tasks @body={
         date_created: <iso-datetime>,
         date_due:     <iso-datetime>,
+        priority:     <high>,
         status:       <string> {open, in progress, closed, deleted},
         title:        <string>,
         description:  <string>,
@@ -171,6 +182,8 @@ Example Usage:
     curl --location --request POST 'http://127.0.0.1:3000/tasks' \
     --header 'Content-Type: application/json' \
     --data-raw '{
+        "priority": "high",
+        "status": "open",
         "date_created": "2020-02-24T15:16:30.000Z",
         "date_due": "2020-02-25T15:16:30.000Z",
         "title": "TITLE",
@@ -182,9 +195,8 @@ Example Usage:
 */
 router.post('/', function(req, res) {
     // todo: add more validation, as of course we only want good data entering the database
-    const expectedFields = ['date_due', 'title', 'description', 'tags', 'priority'];
+    const expectedFields = ['date_due', 'title', 'description', 'tags', 'priority', 'status'];
     var isValid, textPayload, taskJson;
-
 
     try {
         textPayload = JSON.stringify(req.body);
@@ -210,72 +222,6 @@ router.post('/', function(req, res) {
             "data": textPayload
         });
     }
-});
-
-/*
---- Delete Task ---
-Deletes a task, with a uid that is decided upon writing to the database
-
-Syntax:
-    POST <host>/tasks @body={
-        date_created: <iso-datetime>,
-        date_due:     <iso-datetime>,
-        title:        <string>,
-        description:  <string>,
-        tags:         <array[string]>,
-        comments:     <array[string]>,
-        subtasks:     <array[string]>
-    }
-Example Usage:
-    curl --location --request POST 'http://127.0.0.1:3000/tasks' \
-    --header 'Content-Type: application/json' \
-    --data-raw '{
-        "date_created": "2020-02-24T15:16:30.000Z",
-        "date_due": "2020-02-25T15:16:30.000Z",
-        "title": "TITLE",
-        "description": "DETAILS",
-        "tags": [],
-        "comments": [],
-        "subtasks": []
-    }'
-*/
-router.post('/', function(req, res) {
-    // todo: add more validation, as of course we only want good data entering the database
-    const expectedFields = ['date_due', 'title', 'description', 'tags', 'priority'];
-    var isValid, textPayload, taskJson;
-
-
-    try {
-        textPayload = JSON.stringify(req.body);
-        taskJson = JSON.parse(textPayload);
-        isValid = hasExactFields(taskJson, expectedFields);
-    } catch (error) {
-        console.log(error);
-        isValid = false;
-    }
-
-    if (isValid) {
-        addTask(taskJson);
-        res.send({
-            "status": "success",
-            "message": "Created task with fields: " + expectedFields,
-            "data": textPayload
-        });
-
-    } else {
-        res.status(400).send({
-            "status": "error",
-            "message": "Expected exact fields: " + expectedFields,
-            "data": textPayload
-        });
-    }
-});
-
-// DELETE ROUTE
-router.post('/complete', function(req, res) {
-  uid = req.body['uid']
-  console.log(`Delete Task with UID ${uid}`);
-  // TODO ADD logic to complete a task
 });
 
 // ========= EXPORTS
