@@ -71,8 +71,8 @@ function addTask(taskJson) {
     });
 }
 
-function updateTask(taskJson) {
-    let query = `UPDATE task (uid, date_created,date_due,title,description,priority) VALUES("` + taskJson.uid + taskJson.date_created + `","` + taskJson.date_due + `","` + taskJson.title + `","` + taskJson.description + `","` + taskJson.priority +`")`;
+function updateTask(uid, taskJson) {
+    let query = `UPDATE task (uid, date_created,date_due,title,description,priority) VALUES("` + uid + `","` + taskJson.date_created + `","` + taskJson.date_due + `","` + taskJson.title + `","` + taskJson.description + `","` + taskJson.priority +`")`;
     database.query(query, function(error, result) {
         if (error) {
             console.log("Error updating task query");
@@ -142,13 +142,23 @@ router.get('/:uid', function(req, res) {
 Fetch a single task, with nonexistence treated as a 404 error
 
 Syntax:
-    GET <host>/tasks/<unique-integer-id>
-Example Usage:
+    POST <host>/tasks/<uid> @body={
+        date_created: <iso-datetime>,
+        date_due:     <iso-datetime>,
+        priority:     <high>,
+        status:       <string> {open, in progress, closed, deleted},
+        title:        <string>,
+        description:  <string>,
+        tags:         <array[string]>,
+        comments:     <array[string]>,
+        subtasks:     <array[string]>
+    }
+    Example Usage:
     curl -v http://127.0.0.1:3000/tasks
 */
 router.post('/:uid', function(req, res) {
     // todo: add more validation, as of course we only want good data entering the database
-    const expectedFields = ['date_due', 'title', 'description', 'tags', 'priority', 'status'];
+    const expectedFields = ['date_due', 'date_created', 'title', 'description', 'tags', 'priority', 'status', 'comments', 'subtasks'];
     var isValid, textPayload, taskJson;
 
     try {
@@ -161,13 +171,12 @@ router.post('/:uid', function(req, res) {
     }
 
     if (isValid) {
-        addTask(taskJson);
+        updateTask(req.params.uid, taskJson);
         res.send({
             "status": "success",
             "message": "Created task with fields: " + expectedFields,
             "data": textPayload
         });
-
     } else {
         res.status(400).send({
             "status": "error",
@@ -262,8 +271,9 @@ Example Usage:
 */
 router.post('/', function(req, res) {
     // todo: add more validation, as of course we only want good data entering the database
-    const expectedFields = ['date_due', 'title', 'description', 'tags', 'priority', 'status'];
+    const expectedFields = ['date_due', 'date_created', 'title', 'description', 'tags', 'priority', 'status', 'comments', 'subtasks'];
     var isValid, textPayload, taskJson;
+    console.log("dadad");
 
     try {
         textPayload = JSON.stringify(req.body);
