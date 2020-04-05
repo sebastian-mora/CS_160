@@ -1,6 +1,7 @@
 // ========= IMPORTS
 const express = require('express');
 const router = express.Router();
+var mysql = require('mysql');
 
 
 // ========= UTILITIES
@@ -41,38 +42,72 @@ function isEmptyObject(obj) {
 
 // ========= DATABASE
 // note: as these are internal methods, they assume valid input
+let database = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    database: "cs160", // Enter the name of your database
+    password: "yourPass" // Enter your password
+});
 
-// addTask(taskJson: json) => bool
+database.connect(function(error) {
+    if (error) {
+        console.log("Error connecting to database");
+        console.log(error);
+    } else {
+        console.log("Connected to database");
+    }
+});
+// todo: add errors, we want the tasks route to be able to report the error in the response message, rather than logging
+// here...perhaps errors or a status string, that if not empty indicates the error that occurred?
 function addTask(taskJson) {
-    // todo: replace with actual database write
-    return true;
+    let query = `INSERT INTO task (date_created,date_due,title,description,priority) VALUES("` + taskJson.date_created + `","` + taskJson.date_due + `","` + taskJson.title + `","` + taskJson.description + `","` + taskJson.priority +`")`;
+    database.query(query, function(error, result) {
+        if (error) {
+            console.log("Error in task query");
+            console.log(error);
+        } else {
+            console.log(result);
+        }
+    });
+}
+
+function updateTask(uid, taskJson) {
+    let query = `UPDATE task (uid, date_created,date_due,title,description,priority) VALUES("` + uid + `","` + taskJson.date_created + `","` + taskJson.date_due + `","` + taskJson.title + `","` + taskJson.description + `","` + taskJson.priority +`")`;
+    database.query(query, function(error, result) {
+        if (error) {
+            console.log("Error updating task query");
+            console.log(error);
+        } else {
+            console.log(result);
+        }
+    });
 }
 
 // lookupTask(uid: int) => json | {} if not found
-function lookupTask(uid) {
-    // todo: replace dummy data with actual lookup result (as json assembled from sql query)
-    if (uid < 0) {
-        return {};
-    }
-    return {
-        "uid": uid,
-        "date_created": "2020-02-24T15:16:30.000Z",
-        "date_due":     "2020-02-25T15:16:30.000Z",
-        "title":        "my dummy task title",
-        "description":  "my dummy description",
-        "priority": "high",
-        "tags":     [],
-        "comments": [],
-        "subtasks": []
-    };
+function lookupTask(uid){
+    let query = 'SELECT * FROM task WHERE uid="' + uid + '" LIMIT 1';
+    database.query(query, function(error, result) {
+        if (error) {
+            console.log("Error looking up task query");
+            console.log(error);
+        } else {
+            console.log(result);
+        }
+    });
 }
 
 // lookupTasks(createdAfter: date, createdBefore: date) => list[json] | {} if none in time range
-function lookupTasks(createdAfter, createdBefore) {
-    // todo: replace dummy data with actual lookup result (as json assembled from sql query)
-    return [lookupTask(6)];
+function lookupTasks(createdAfter, createdBefore){
+    let query = 'SELECT * FROM task WHERE date_created BETWEEN "' + createdAfter.toISOString() +'" AND "' + createdBefore.toISOString() + '"';
+    database.query(query, function(error, result) {
+        if (error) {
+            console.log("Error in looking up multiple tasks query");
+            console.log(error);
+        } else {
+            console.log(result);
+        }
+    });
 }
-
 
 // ========= ENDPOINTS
 
@@ -103,6 +138,56 @@ router.get('/:uid', function(req, res) {
 });
 
 /*
+--- Edit a Task ---
+Fetch a single task, with nonexistence treated as a 404 error
+
+Syntax:
+    POST <host>/tasks/<uid> @body={
+        date_created: <iso-datetime>,
+        date_due:     <iso-datetime>,
+        priority:     <high>,
+        status:       <string> {open, in progress, closed, deleted},
+        title:        <string>,
+        description:  <string>,
+        tags:         <array[string]>,
+        comments:     <array[string]>,
+        subtasks:     <array[string]>
+    }
+    Example Usage:
+    curl -v http://127.0.0.1:3000/tasks
+*/
+router.post('/:uid', function(req, res) {
+    // todo: add more validation, as of course we only want good data entering the database
+    const expectedFields = ['date_due', 'date_created', 'title', 'description', 'tags', 'priority', 'status', 'comments', 'subtasks'];
+    var isValid, textPayload, taskJson;
+
+    try {
+        textPayload = JSON.stringify(req.body);
+        taskJson = JSON.parse(textPayload);
+        isValid = hasExactFields(taskJson, expectedFields);
+    } catch (error) {
+        console.log(error);
+        isValid = false;
+    }
+
+    if (isValid) {
+        updateTask(req.params.uid, taskJson);
+        res.send({
+            "status": "success",
+            "message": "Created task with fields: " + expectedFields,
+            "data": textPayload
+        });
+    } else {
+        res.status(400).send({
+            "status": "error",
+            "message": "Expected exact fields: " + expectedFields,
+            "data": textPayload
+        });
+    }
+});
+
+
+/*
 --- Fetch All Tasks ---
 Fetches all saved tasks in database, no matter how many
 
@@ -121,6 +206,7 @@ router.get('/', function(req, res) {
     // });
     res.render('pages/index.ejs', {tasks:taskJsons});
 });
+
 
 /*
 --- Fetch Tasks Within Time Span---
@@ -153,13 +239,15 @@ router.get('/?', function(req, res) {
 });
 
 /*
---- Create Task ---
+--- Create/Delete/Update Task ---
 Creates a new task, with a uid that is decided upon writing to the database
 
 Syntax:
     POST <host>/tasks @body={
         date_created: <iso-datetime>,
         date_due:     <iso-datetime>,
+        priority:     <high>,
+        status:       <string> {open, in progress, closed, deleted},
         title:        <string>,
         description:  <string>,
         tags:         <array[string]>,
@@ -170,6 +258,8 @@ Example Usage:
     curl --location --request POST 'http://127.0.0.1:3000/tasks' \
     --header 'Content-Type: application/json' \
     --data-raw '{
+        "priority": "high",
+        "status": "open",
         "date_created": "2020-02-24T15:16:30.000Z",
         "date_due": "2020-02-25T15:16:30.000Z",
         "title": "TITLE",
@@ -181,9 +271,9 @@ Example Usage:
 */
 router.post('/', function(req, res) {
     // todo: add more validation, as of course we only want good data entering the database
-    const expectedFields = ['date_due', 'title', 'description', 'tags', 'priority'];
+    const expectedFields = ['date_due', 'date_created', 'title', 'description', 'tags', 'priority', 'status', 'comments', 'subtasks'];
     var isValid, textPayload, taskJson;
-
+    console.log("dadad");
 
     try {
         textPayload = JSON.stringify(req.body);
@@ -209,14 +299,6 @@ router.post('/', function(req, res) {
             "data": textPayload
         });
     }
-});
-
-
-// DELETE ROUTE
-router.post('/complete', function(req, res) {
-  uid = req.body['uid']
-  console.log(`Delete Task with UID ${uid}`);
-  // TODO ADD logic to complete a task
 });
 
 // ========= EXPORTS
