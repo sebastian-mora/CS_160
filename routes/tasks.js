@@ -116,6 +116,10 @@ function lookupTasks(createdAfter, createdBefore){
   });
 }
 
+isOpen = (task) => {
+  return task.status == 'open'
+}
+
 // ========= ENDPOINTS
 
 /*
@@ -206,7 +210,9 @@ Example Usage:
 router.get('/', function(req, res) {
      lookupTasks(getEpochDate(), getCurrentDate()).then(function(rows) {
        const message =  "Fetched ALL " + rows.length + " task(s)";
-       res.render('pages/index.ejs', {tasks:rows});
+       task_data = rows.filter(isOpen)
+
+       res.render('pages/index.ejs', {tasks:task_data});
     }).catch((err) => setImmediate(() => { throw err; }));
 
     // res.send({
