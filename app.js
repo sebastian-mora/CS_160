@@ -75,20 +75,7 @@ function addTask(taskJson){
   });
 }
 
-function lookupTask(uid){
-  uid = 1;
-  let query = 'SELECT * FROM task WHERE uid="'+uid +'"';
-  database.query(query, function(error, result) {
-    if (error) {
-      console.log("Error in task query");
-      console.log(error);
-    } else {
-      console.log(result);
-    }
-  });
-}
 
-lookupTask(1);
 
 app.use('/', routes);
 app.use('/users', users);

@@ -72,14 +72,15 @@ function addTask(taskJson) {
 }
 
 function updateTask(uid, taskJson) {
-    let query = `UPDATE task (uid, date_created,date_due,title,description,priority) VALUES("` + uid + `","` + taskJson.date_created + `","` + taskJson.date_due + `","` + taskJson.title + `","` + taskJson.description + `","` + taskJson.priority +`")`;
-    database.query(query, function(error, result) {
-        if (error) {
-            console.log("Error updating task query");
-            console.log(error);
-        } else {
-            console.log(result);
-        }
+    return new Promise(function(resolve, reject) {
+      let query = `UPDATE task (uid, date_created,date_due,title,description,priority) VALUES("` + uid + `","` + taskJson.date_created + `","` + taskJson.date_due + `","` + taskJson.title + `","` + taskJson.description + `","` + taskJson.priority +`")`;
+      database.query(query, function(error, result) {
+          if (error) {
+            return reject(error);
+          } else {
+              resolve(result);
+          }
+      });
     });
 }
 
@@ -94,6 +95,19 @@ function lookupTask(uid){
             console.log(result);
         }
     });
+}
+
+function deleteTask(uid){
+  return new Promise(function(resolve, reject) {
+    let query = 'DELETE FROM task WHERE task_id =' + uid;
+    database.query(query, function(error, result) {
+        if (error) {
+          return reject(error);
+        } else {
+            resolve(result);
+        }
+    });
+  });
 }
 
 // lookupTasks(createdAfter: date, createdBefore: date) => list[json] | {} if none in time range
