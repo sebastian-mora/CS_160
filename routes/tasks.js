@@ -148,55 +148,6 @@ router.get('/:uid', function(req, res) {
     }
 });
 
-/*
---- Edit a Task ---
-Fetch a single task, with nonexistence treated as a 404 error
-
-Syntax:
-    POST <host>/tasks/<uid> @body={
-        date_created: <iso-datetime>,
-        date_due:     <iso-datetime>,
-        priority:     <high>,
-        status:       <string> {open, in progress, closed, deleted},
-        title:        <string>,
-        description:  <string>,
-        tags:         <array[string]>,
-        comments:     <array[string]>,
-        subtasks:     <array[string]>
-    }
-    Example Usage:
-    curl -v http://127.0.0.1:3000/tasks
-*/
-router.post('/:uid', function(req, res) {
-    // todo: add more validation, as of course we only want good data entering the database
-    const expectedFields = ['date_due', 'date_created', 'title', 'description', 'tags', 'priority', 'status', 'comments', 'subtasks'];
-    var isValid, textPayload, taskJson;
-
-    try {
-        textPayload = JSON.stringify(req.body);
-        taskJson = JSON.parse(textPayload);
-        isValid = hasExactFields(taskJson, expectedFields);
-    } catch (error) {
-        console.log(error);
-        isValid = false;
-    }
-
-    if (isValid) {
-        updateTask(req.params.uid, taskJson);
-        res.send({
-            "status": "success",
-            "message": "Created task with fields: " + expectedFields,
-            "data": textPayload
-        });
-    } else {
-        res.status(400).send({
-            "status": "error",
-            "message": "Expected exact fields: " + expectedFields,
-            "data": textPayload
-        });
-    }
-});
-
 
 /*
 --- Fetch All Tasks ---
@@ -255,7 +206,7 @@ router.get('/?', function(req, res) {
 });
 
 /*
---- Create/Delete/Update Task ---
+--- Create ---
 Creates a new task, with a uid that is decided upon writing to the database
 
 Syntax:
@@ -289,7 +240,6 @@ router.post('/', function(req, res) {
     // todo: add more validation, as of course we only want good data entering the database
     const expectedFields = ['date_due', 'date_created', 'title', 'description', 'tags', 'priority', 'status', 'comments', 'subtasks'];
     var isValid, textPayload, taskJson;
-    console.log("dadad");
 
     try {
         textPayload = JSON.stringify(req.body);
@@ -307,7 +257,56 @@ router.post('/', function(req, res) {
             "message": "Created task with fields: " + expectedFields,
             "data": textPayload
         });
+    } else {
+        res.status(400).send({
+            "status": "error",
+            "message": "Expected exact fields: " + expectedFields,
+            "data": textPayload
+        });
+    }
+});
 
+
+/*
+--- Edit a Task ---
+Fetch a single task, with nonexistence treated as a 404 error
+
+Syntax:
+    POST <host>/tasks/<uid> @body={
+        date_created: <iso-datetime>,
+        date_due:     <iso-datetime>,
+        priority:     <high>,
+        status:       <string> {open, in progress, closed, deleted},
+        title:        <string>,
+        description:  <string>,
+        tags:         <array[string]>,
+        comments:     <array[string]>,
+        subtasks:     <array[string]>
+    }
+    Example Usage:
+    curl -v http://127.0.0.1:3000/tasks
+*/
+router.post('/:uid', function(req, res) {
+    // todo: add more validation, as of course we only want good data entering the database
+    const expectedFields = ['date_due', 'date_created', 'title', 'description', 'tags', 'priority', 'status', 'comments', 'subtasks'];
+    var isValid, textPayload, taskJson;
+
+    try {
+        textPayload = JSON.stringify(req.body);
+        taskJson = JSON.parse(textPayload);
+        isValid = hasExactFields(taskJson, expectedFields);
+    } catch (error) {
+        console.log(error);
+        isValid = false;
+    }
+
+    if (isValid) {
+        updateTask(req.params.uid, taskJson);
+        res.send({
+            "status": "success",
+            "message": "Created task with fields: " + expectedFields,
+            "data": textPayload
+        });
     } else {
         res.status(400).send({
             "status": "error",
