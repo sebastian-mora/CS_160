@@ -19,7 +19,7 @@ curl --location --request GET \
 'http://127.0.0.1:3000/tasks?created_after=2020-02-24T15:16:30.000Z&created_before=2020-02-28T15:16:30.000Z'
 
 
-# ======= EDIT TASK FROM EARLIER
+# ======= EDIT TASK FROM EARLIER, NOTE the uid is included in the route
 curl --location --request POST 'http://127.0.0.1:3000/tasks/1' \
 --header 'Content-Type: application/json' \
 --data-raw '{
