@@ -43,10 +43,10 @@ function isEmptyObject(obj) {
 // ========= DATABASE
 // note: as these are internal methods, they assume valid input
 let database = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  database: "cs160", // Enter the name of your database
-  password: "yourPass" // Enter your password
+    host: "localhost",
+    user: "root",
+    database: "cs160", // Enter the name of your database
+    password: "yourPass" // Enter your password
 });
 
 database.connect(function(error) {
@@ -99,25 +99,25 @@ function lookupTask(uid){
 // lookupTasks(createdAfter: date, createdBefore: date) => list[json] | {} if none in time range
 function lookupTasks(createdAfter, createdBefore){
 
-  return new Promise(function(resolve, reject) {
-      // The Promise constructor should catch any errors thrown on
-      // this tick. Alternately, try/catch and reject(err) on catch.
+    return new Promise(function(resolve, reject) {
+        // The Promise constructor should catch any errors thrown on
+        // this tick. Alternately, try/catch and reject(err) on catch.
 
-      var query_str = 'SELECT * FROM task WHERE date_created BETWEEN "' + createdAfter.toISOString() +'" AND "' + createdBefore.toISOString() + '"';
+        var query_str = 'SELECT * FROM task WHERE date_created BETWEEN "' + createdAfter.toISOString() +'" AND "' + createdBefore.toISOString() + '"';
 
-      database.query(query_str, function (err, rows, fields) {
-          // Call reject on error states,
-          // call resolve with results
-          if (err) {
-              return reject(err);
-          }
-          resolve(rows);
-      });
-  });
+        database.query(query_str, function (err, rows, fields) {
+            // Call reject on error states,
+            // call resolve with results
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+        });
+    });
 }
 
 isOpen = (task) => {
-  return task.status == 'open'
+    return task.status == 'open'
 }
 
 // ========= ENDPOINTS
@@ -159,11 +159,11 @@ Example Usage:
     curl --location --request GET 'http://127.0.0.1:3000/tasks'
 */
 router.get('/', function(req, res) {
-     lookupTasks(getEpochDate(), getCurrentDate()).then(function(rows) {
-       const message =  "Fetched ALL " + rows.length + " task(s)";
-       task_data = rows.filter(isOpen)
+    lookupTasks(getEpochDate(), getCurrentDate()).then(function(rows) {
+        const message =  "Fetched ALL " + rows.length + " task(s)";
+        task_data = rows.filter(isOpen)
 
-       res.render('pages/index.ejs', {tasks:task_data});
+        res.render('pages/index.ejs', {tasks:task_data});
     }).catch((err) => setImmediate(() => { throw err; }));
 
     // res.send({
@@ -213,26 +213,22 @@ Creates a new task, with a uid that is decided upon writing to the database
 
 Syntax:
     POST <host>/tasks @body={
-        date_created: <iso-datetime>,
         date_due:     <iso-datetime>,
         priority:     <high>,
         status:       <string> {open, in progress, closed, deleted},
         title:        <string>,
         description:  <string>,
-        tags:         <array[string]>,
-        comments:     <array[string]>,
         subtasks:     <array[string]>
     }
 Example Usage:
     curl --location --request POST 'http://127.0.0.1:3000/tasks' \
     --header 'Content-Type: application/json' \
     --data-raw '{
+        "date_due": "2020-02-25T15:16:30.000Z",
         "priority": "high",
         "status": "open",
-        "date_due": "2020-02-25T15:16:30.000Z",
         "title": "TITLE",
         "description": "DETAILS",
-        "tags": [],
         "subtasks": []
     }'
 */
@@ -276,7 +272,6 @@ Syntax:
         status:       <string> {open, in progress, closed, deleted},
         title:        <string>,
         description:  <string>,
-        tags:         <array[string]>,
         subtasks:     <array[string]>
     }
     Example Usage:
@@ -285,7 +280,6 @@ Syntax:
 router.post('/:uid', function(req, res) {
     // todo: add more validation, as of course we only want good data entering the database
     var isValid, textPayload, taskJson;
-
     try {
         textPayload = JSON.stringify(req.body);
         taskJson = JSON.parse(textPayload);

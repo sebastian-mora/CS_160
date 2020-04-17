@@ -5,12 +5,9 @@ curl --location --request POST 'http://127.0.0.1:3000/tasks' \
 --data-raw '{
     "priority": "high",
     "status": "open",
-    "date_created": "2020-02-24T15:16:30.000Z",
     "date_due": "2020-02-25T15:16:30.000Z",
     "title": "TITLE",
     "description": "DETAILS",
-    "tags": [],
-    "comments": [],
     "subtasks": []
 }'
 
@@ -25,11 +22,8 @@ curl --location --request POST 'http://127.0.0.1:3000/tasks/1' \
 --data-raw '{
     "priority": "high",
     "status": "open",
-    "date_created": "2020-02-24T15:16:30.000Z",
     "date_due": "2020-02-25T15:16:30.000Z",
     "title": "TITLE",
     "description": "DETAILS",
-    "tags": [],
-    "comments": [],
     "subtasks": []
 }'
