@@ -205,6 +205,8 @@ router.get('/?', function(req, res) {
     }
 });
 
+
+const EXPECTED_FIELDS = ['date_due', 'title', 'description', 'tags', 'priority', 'status', 'subtasks'];
 /*
 --- Create ---
 Creates a new task, with a uid that is decided upon writing to the database
@@ -227,24 +229,20 @@ Example Usage:
     --data-raw '{
         "priority": "high",
         "status": "open",
-        "date_created": "2020-02-24T15:16:30.000Z",
         "date_due": "2020-02-25T15:16:30.000Z",
         "title": "TITLE",
         "description": "DETAILS",
         "tags": [],
-        "comments": [],
         "subtasks": []
     }'
 */
 router.post('/', function(req, res) {
     // todo: add more validation, as of course we only want good data entering the database
-    const expectedFields = ['date_due', 'date_created', 'title', 'description', 'tags', 'priority', 'status', 'comments', 'subtasks'];
     var isValid, textPayload, taskJson;
-
     try {
         textPayload = JSON.stringify(req.body);
         taskJson = JSON.parse(textPayload);
-        isValid = hasExactFields(taskJson, expectedFields);
+        isValid = hasExactFields(taskJson, EXPECTED_FIELDS);
     } catch (error) {
         console.log(error);
         isValid = false;
@@ -254,13 +252,13 @@ router.post('/', function(req, res) {
         addTask(taskJson);
         res.send({
             "status": "success",
-            "message": "Created task with fields: " + expectedFields,
+            "message": "Created task with fields: " + EXPECTED_FIELDS,
             "data": textPayload
         });
     } else {
         res.status(400).send({
             "status": "error",
-            "message": "Expected exact fields: " + expectedFields,
+            "message": "Expected exact fields: " + EXPECTED_FIELDS,
             "data": textPayload
         });
     }
@@ -273,14 +271,12 @@ Fetch a single task, with nonexistence treated as a 404 error
 
 Syntax:
     POST <host>/tasks/<uid> @body={
-        date_created: <iso-datetime>,
         date_due:     <iso-datetime>,
         priority:     <high>,
         status:       <string> {open, in progress, closed, deleted},
         title:        <string>,
         description:  <string>,
         tags:         <array[string]>,
-        comments:     <array[string]>,
         subtasks:     <array[string]>
     }
     Example Usage:
@@ -288,13 +284,12 @@ Syntax:
 */
 router.post('/:uid', function(req, res) {
     // todo: add more validation, as of course we only want good data entering the database
-    const expectedFields = ['date_due', 'date_created', 'title', 'description', 'tags', 'priority', 'status', 'comments', 'subtasks'];
     var isValid, textPayload, taskJson;
 
     try {
         textPayload = JSON.stringify(req.body);
         taskJson = JSON.parse(textPayload);
-        isValid = hasExactFields(taskJson, expectedFields);
+        isValid = hasExactFields(taskJson, EXPECTED_FIELDS);
     } catch (error) {
         console.log(error);
         isValid = false;
@@ -304,13 +299,13 @@ router.post('/:uid', function(req, res) {
         updateTask(req.params.uid, taskJson);
         res.send({
             "status": "success",
-            "message": "Created task with fields: " + expectedFields,
+            "message": "Created task with fields: " + EXPECTED_FIELDS,
             "data": textPayload
         });
     } else {
         res.status(400).send({
             "status": "error",
-            "message": "Expected exact fields: " + expectedFields,
+            "message": "Expected exact fields: " + EXPECTED_FIELDS,
             "data": textPayload
         });
     }
