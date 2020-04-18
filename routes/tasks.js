@@ -43,10 +43,10 @@ function isEmptyObject(obj) {
 // ========= DATABASE
 // note: as these are internal methods, they assume valid input
 let database = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  database: "cs160", // Enter the name of your database
-  password: "yourPass" // Enter your password
+  host: "10.0.0.219",
+  user: "seb",
+  database: "sqldev", // Enter the name of your database
+  password: "test" // Enter your password
 });
 
 database.connect(function(error) {
@@ -60,7 +60,7 @@ database.connect(function(error) {
 // todo: add errors, we want the tasks route to be able to report the error in the response message, rather than logging
 // here...perhaps errors or a status string, that if not empty indicates the error that occurred?
 function addTask(taskJson) {
-    let query = `INSERT INTO task (date_created,date_due,title,description,priority) VALUES("` + taskJson.date_created + `","` + taskJson.date_due + `","` + taskJson.title + `","` + taskJson.description + `","` + taskJson.priority +`")`;
+    let query = `INSERT INTO task (date_due,title,description,priority,status) VALUES( '${taskJson.date_due}', '${taskJson.title}', '${taskJson.description}', '${taskJson.priority}', '${taskJson.status}')`
     database.query(query, function(error, result) {
         if (error) {
             console.log("Error in task query");
@@ -72,7 +72,7 @@ function addTask(taskJson) {
 }
 
 function updateTask(uid, taskJson) {
-    let query = `UPDATE task (uid, date_created,date_due,title,description,priority) VALUES("` + uid + `","` + taskJson.date_created + `","` + taskJson.date_due + `","` + taskJson.title + `","` + taskJson.description + `","` + taskJson.priority +`")`;
+    let query = `UPDATE sqldev.task SET date_due='${taskJson.date_due}', title='${taskJson.title}', description='${taskJson.description}', priority='${taskJson.priority}', status='${taskJson.status}' WHERE uid=${uid}`
     database.query(query, function(error, result) {
         if (error) {
             console.log("Error updating task query");
@@ -139,6 +139,8 @@ router.get('/:uid', function(req, res) {
             "message": "Fetched task with uid=" + req.params.uid,
             "data": taskJson
         });
+
+        res.redirect('/tasks')
     } else {
         res.status(404).send({
             "status": "error",
@@ -206,7 +208,7 @@ router.get('/?', function(req, res) {
 });
 
 
-const EXPECTED_FIELDS = ['date_due', 'title', 'description', 'tags', 'priority', 'status', 'subtasks'];
+const EXPECTED_FIELDS = ['date_due', 'title', 'description', 'tags', 'priority', 'status'];
 /*
 --- Create ---
 Creates a new task, with a uid that is decided upon writing to the database
@@ -250,11 +252,7 @@ router.post('/', function(req, res) {
 
     if (isValid) {
         addTask(taskJson);
-        res.send({
-            "status": "success",
-            "message": "Created task with fields: " + EXPECTED_FIELDS,
-            "data": textPayload
-        });
+        res.redirect('/tasks')
     } else {
         res.status(400).send({
             "status": "error",
@@ -289,7 +287,8 @@ router.post('/:uid', function(req, res) {
     try {
         textPayload = JSON.stringify(req.body);
         taskJson = JSON.parse(textPayload);
-        isValid = hasExactFields(taskJson, EXPECTED_FIELDS);
+        // isValid = hasExactFields(taskJson, EXPECTED_FIELDS);
+        isValid = true
     } catch (error) {
         console.log(error);
         isValid = false;
@@ -297,11 +296,7 @@ router.post('/:uid', function(req, res) {
 
     if (isValid) {
         updateTask(req.params.uid, taskJson);
-        res.send({
-            "status": "success",
-            "message": "Created task with fields: " + EXPECTED_FIELDS,
-            "data": textPayload
-        });
+        res.redirect('/tasks')
     } else {
         res.status(400).send({
             "status": "error",

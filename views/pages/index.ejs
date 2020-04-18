@@ -46,7 +46,7 @@
                                     <th scope="col"></th>
                                     <th scope="col">Due Date</th>
                                     <th scope="col">Task Name</th>
-                                    <th scope="col">Date</th>
+                                    <th scope="col">Date Created</th>
                                     <th scope="col">Prority</th>
                                 </tr>
                             </thead>
@@ -57,19 +57,19 @@
                                 <tr>
 
                                   <th scope="col">
-                                    <form action="/tasks/complete" method="post">
+                                    <form action="/tasks/<%= task.uid %>" method="post">
                                       <input type="hidden" id="uid" name="uid" value="<%= task.uid %>">
-                                      <input type="hidden" id="status" name="status" value="deleted">
+                                      <input type="hidden" id="title" name="title" value="<%= task.title %>">
                                       <input type="hidden" id="date_due" name="date_due" value="<%= task.date_due %>">
-                                      <input type="hidden" id="description" name="status" value="<%=task.description%>">
+                                      <input type="hidden" id="description" name="description" value="<%=task.description%>">
                                       <input type="hidden" id="priority" name="priority" value="<%= task.priority %>">
                                       <input type="hidden" id="status" name="status" value="deleted">
                                       <input type="submit" value="X">
                                     </form>
                                   </th>
-                                   <td><%= task.date_created %> </td>
-                                   <td><%= task.title %> </td>
                                    <td><%= task.date_due %> </td>
+                                   <td><%= task.title %> </td>
+                                   <td><%= task.date_created %> </td>
                                    <td><%= task.priority %> </td>
                                    <td><button type="button" class="btn-sm btn-info" data-toggle="modal" data-target="#taskModal<%=i%>">Info</button></td>
                                    <td style="display: none;">asdasd</td>
