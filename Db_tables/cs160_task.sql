@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 8.0.17, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.29, for Linux (x86_64)
 --
--- Host: 127.0.0.1    Database: cs160
+-- Host: 10.0.0.219    Database: sqldev
 -- ------------------------------------------------------
--- Server version	8.0.17
+-- Server version	8.0.19
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -21,17 +21,17 @@
 
 DROP TABLE IF EXISTS `task`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `task` (
-  `uid` int(11) NOT NULL AUTO_INCREMENT,
-  `date_created` varchar(45) DEFAULT NULL,
+  `uid` int NOT NULL AUTO_INCREMENT,
+  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
   `date_due` varchar(45) DEFAULT NULL,
   `title` varchar(45) DEFAULT NULL,
   `description` varchar(45) DEFAULT NULL,
   `priority` varchar(45) DEFAULT NULL,
   `status` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `task` (
 
 LOCK TABLES `task` WRITE;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES (1,'2020-02-24T15:16:30.000Z','2020-02-25T15:16:30.000Z','Create testing inputs for database','Scenario testing for db','high',NULL),(2,'2020-02-24T15:16:30.000Z','2020-02-25T15:16:30.000Z','Create testing inputs for database','Scenario testing for db','high',NULL),(3,'2020-02-24T15:16:30.000Z','2020-02-25T15:16:30.000Z','my dummy task title','my dummy description','high',NULL);
+INSERT INTO `task` VALUES (9,'2020-04-18 20:26:21','2020-04-30','Updated Name','asd','high','deleted'),(11,'2020-04-18 20:28:33','2020-04-19','Take out the Trash','Need to take out the trash','high','open'),(12,'2020-04-18 20:32:44','2020-04-28','Mop the floors','Mop all the floors','meidum','open'),(13,'2020-04-18 20:32:59','2020-04-20','Wash the Car','Wash the car','high','open');
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -53,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-10 19:22:08
+-- Dump completed on 2020-04-18 13:37:54
