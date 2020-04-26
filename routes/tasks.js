@@ -71,8 +71,20 @@ function addTask(taskJson) {
     });
 }
 
+function addSubTask(subtask){
+    let query = `INSERT INTO subtasks (title, task_id) VALUES('${subtask.title}', '${subtask.task_id}')`;
+    database.query(query, function(error, result) {
+        if (error) {
+            console.log("Error in task query");
+            console.log(error);
+        } else {
+            console.log(result);
+        }
+    });
+}
+
 function updateTask(uid, taskJson) {
-    let query = `UPDATE sqldev.task SET date_due='${taskJson.date_due}', title='${taskJson.title}', description='${taskJson.description}', priority='${taskJson.priority}', status='${taskJson.status}' WHERE uid=${uid}`
+    let query = `UPDATE task SET date_due='${taskJson.date_due}', title='${taskJson.title}', description='${taskJson.description}', priority='${taskJson.priority}', status='${taskJson.status}' WHERE uid=${uid}`
     database.query(query, function(error, result) {
         if (error) {
             console.log("Error updating task query");
@@ -315,6 +327,44 @@ router.post('/:uid', function(req, res) {
             "data": textPayload
         });
     }
+});
+
+
+
+// Adding a subtask to existing task 
+
+router.post('/:uid/subtask', function(req, res) {
+    // todo: add more validation, as of course we only want good data entering the database
+    var isValid, textPayload, taskJson;
+
+    try {
+        textPayload = JSON.stringify(req.body);
+        taskJson = JSON.parse(textPayload);
+        // isValid = hasExactFields(taskJson, EXPECTED_FIELDS);
+        isValid = true
+    } catch (error) {
+        console.log(error);
+        isValid = false;
+    }
+
+    if (isValid) {
+        subtask = {
+            task_id:req.params.uid,
+            title: taskJson.title
+        }
+
+        addSubTask(subtask);
+        res.redirect('/tasks')
+
+    } else {
+        res.status(400).send({
+            "status": "error",
+            "message": "Expected exact fields: " + EXPECTED_FIELDS,
+            "data": textPayload
+        });
+    }
+
+
 });
 
 // ========= EXPORTS
