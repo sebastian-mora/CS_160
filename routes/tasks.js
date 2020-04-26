@@ -83,16 +83,24 @@ function updateTask(uid, taskJson) {
     });
 }
 
+// let query = 
 // lookupTask(uid: int) => json | {} if not found
-function lookupTask(uid){
-    let query = 'SELECT * FROM task WHERE uid="' + uid + '" LIMIT 1';
-    database.query(query, function(error, result) {
-        if (error) {
-            console.log("Error looking up task query");
-            console.log(error);
-        } else {
-            console.log(result);
-        }
+function lookupTask(search){
+   
+    return new Promise(function(resolve, reject) {
+        // The Promise constructor should catch any errors thrown on
+        // this tick. Alternately, try/catch and reject(err) on catch.
+  
+        var query_str = `SELECT * FROM task WHERE title LIKE '%${search}%'`;
+
+        database.query(query_str, function (err, rows, fields) {
+            // Call reject on error states,
+            // call resolve with results
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+        });
     });
 }
 
@@ -131,21 +139,24 @@ Syntax:
 Example Usage:
     curl -v http://127.0.0.1:3000/tasks
 */
-router.get('/:uid', function(req, res) {
-    const taskJson = lookupTask(req.params.uid);
-    if (!isEmptyObject(taskJson)) {
-        res.send({
-            "status": "success",
-            "message": "Fetched task with uid=" + req.params.uid,
-            "data": taskJson
-        });
+router.get('/search', function(req, res) {
+    const search = req.query['search'];
+    
+    if (search) {
 
-        res.redirect('/tasks')
+        tasks = lookupTask(search).then(function(rows) {
+            const message =  "Fetched ALL " + rows.length + " task(s)";
+            console.log(message);
+            
+            task_data = rows.filter(isOpen)
+            res.render('pages/index.ejs', {tasks:task_data});
+        }).catch((err) => setImmediate(() => { throw err; }));
+        
     } else {
         res.status(404).send({
             "status": "error",
-            "message": "No task with uid=" + req.params.uid + " found",
-            "data": taskJson
+            "message": "No task with uid=" + search + " found",
+            "data": search
         });
     }
 });
