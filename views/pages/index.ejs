@@ -32,8 +32,9 @@
                 <%- include('../partials/index/TaskMenu') -%>
 
                 <% tasks.forEach(function(task, i) { %>
-                  <%- include('../partials/index/TaskModal', {modal_name_task:"taskModal"+i, modal_name_edit:"editModal"+i, task:task}) -%>
+                  <%- include('../partials/index/TaskModal', {modal_name_task:"taskModal"+i, modal_name_sub:"subModal"+i,task:task  , modal_name_edit:"editModal"+i, task:task}) -%>
                   <%- include('../partials/index/EditTaskModal', {modal_name:"editModal"+i,task:task}) -%>
+                  <%- include('../partials/index/SubTaskModal', {modal_name_sub:"subModal"+i,task:task}) -%>
               <% }); %>
 
                     <!-- Holds all tasks -->

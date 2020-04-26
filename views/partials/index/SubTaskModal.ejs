@@ -1,0 +1,32 @@
+
+  <!-- The Modal -->
+  <div class="modal fade" id="<%=modal_name_sub%>" tabindex="-1" role="dialog" aria-labelledby="<%=modal_name_sub%>Label" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Add a Subtask</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <form action="/task/<%= task.uid %>"" enctype='application/json' method="POST" name="taskForm">
+              <div class="form-group">
+
+                <input type="hidden" name="status" value="open">
+                <label for="title">Task Title</label>
+                <input type="text" class="form-control" value="<%= task.title %>" name="title" id="title" placeholder="<%= task.title %>">
+              </div>
+
+              <input class="btn btn-success my-2 my-sm-0" value="Submit" type="submit">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+<!-- End of Modal -->
