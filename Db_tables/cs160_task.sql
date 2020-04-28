@@ -30,6 +30,7 @@ CREATE TABLE `task` (
   `description` varchar(45) DEFAULT NULL,
   `priority` varchar(45) DEFAULT NULL,
   `status` varchar(45) DEFAULT NULL,
+  `tag` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`uid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
