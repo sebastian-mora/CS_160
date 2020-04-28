@@ -3,7 +3,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="<%=modal_name_task%>ModalLabel"><%=task.title%></h5>
+        <h3 class="modal-title" id="<%=modal_name_task%>ModalLabel"><%=task.title%></h3>
         <div class="task-progress">
           <label for="progress">Prog</label>
           <progress id="" value="50" max="100"> 32% </progress>
@@ -14,11 +14,32 @@
 
       </div>
       <div class="modal-body">
-          <p><%=task.description%></p>
-          <p><%= task.date_created %> </p>
-          <p><%= task.title %> </p>
-          <p><%= task.date_due %> </p>
-          <p><%= task.priority %> </p>
+
+        <label>Description</label>
+        <p><%=task.description%></p>
+
+        <label>Due Date</label>
+        <p><%= task.date_due %> </p>
+
+        <label>Priority</label>
+        <p><%= task.priority %> </p>
+      </div>
+
+      <div class="subtask-container">
+        <ul class="subtask-list"> 
+          <% for (var i =0; i < task.subtasks.length;  i++ ) { %>
+            <li>
+              <form action="/task/<%= task.uid %>/subtask"" enctype='application/json' method="POST"">
+                <button type="submit" value="submit" class="btn-sm btn-success ">✓</button>
+                <input type="hidden" name="delete" value="<%= task.subtasks[i].subtask_id%>">
+                <%= task.subtasks[i].title %> 
+              </form>
+
+            </li>
+            
+          <% } %>
+
+         </ul>
       </div>
 
 
