@@ -4,7 +4,11 @@ const database = require('./connection');
 // todo: add errors, we want the tasks route to be able to report the error in the response message, rather than logging
 // here...perhaps errors or a status string, that if not empty indicates the error that occurred?
 function addTask(taskJson) {
-    let query = `INSERT INTO task (date_due,title,description,priority,status) VALUES( '${taskJson.date_due}', '${taskJson.title}', '${taskJson.description}', '${taskJson.priority}', '${taskJson.status}')`
+
+    console.log(taskJson);
+    
+    
+    let query = `INSERT INTO task (date_due,title,description,priority,status, tag) VALUES( '${taskJson.date_due}', '${taskJson.title}', '${taskJson.description}', '${taskJson.priority}', '${taskJson.status}', '${taskJson.tag}')`
     database.query(query, function(error, result) {
         if (error) {
             console.log("Error in task query");
@@ -41,7 +45,7 @@ function deleteSubTask(subtask_id){
 }
 
 function updateTask(uid, taskJson) {
-    let query = `UPDATE task SET date_due='${taskJson.date_due}', title='${taskJson.title}', description='${taskJson.description}', priority='${taskJson.priority}', status='${taskJson.status}' WHERE uid=${uid}`
+    let query = `UPDATE task SET date_due='${taskJson.date_due}', title='${taskJson.title}', description='${taskJson.description}', priority='${taskJson.priority}', status='${taskJson.status}', tag='${taskJson.tag}' WHERE uid=${uid}`
     database.query(query, function(error, result) {
         if (error) {
             console.log("Error updating task query");
@@ -121,5 +125,6 @@ module.exports ={
     deleteSubTask,
     searchLookup,
     lookupTasks,
-    lookupSubTasks
+    lookupSubTasks,
+    updateTask
 }

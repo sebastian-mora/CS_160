@@ -141,15 +141,7 @@ router.get('/', function(req, res) {
             res.render('pages/index.ejs', {tasks:task_data});
         })
 
-      
-       
     }).catch((err) => setImmediate(() => { throw err; }));
-
-    // res.send({
-    //     "status": "success",
-    //     "data": taskJsons,
-    //     "message": "Fetched ALL " + taskJsons.length + " task(s)"
-    // });
 
 });
 
@@ -185,7 +177,7 @@ router.get('/?', function(req, res) {
 });
 
 
-const EXPECTED_FIELDS = ['date_due', 'title', 'description', 'tags', 'priority', 'status'];
+const EXPECTED_FIELDS = ['date_due', 'title', 'description', 'tag', 'priority', 'status'];
 /*
 --- Create ---
 Creates a new task, with a uid that is decided upon writing to the database
@@ -198,7 +190,7 @@ Syntax:
         status:       <string> {open, in progress, closed, deleted},
         title:        <string>,
         description:  <string>,
-        tags:         <array[string]>,
+        tag:         "",
         comments:     <array[string]>,
         subtasks:     <array[string]>
     }
@@ -211,7 +203,7 @@ Example Usage:
         "date_due": "2020-02-25T15:16:30.000Z",
         "title": "TITLE",
         "description": "DETAILS",
-        "tags": [],
+        "tag": "",
         "subtasks": []
     }'
 */
@@ -251,7 +243,7 @@ Syntax:
         status:       <string> {open, in progress, closed, deleted},
         title:        <string>,
         description:  <string>,
-        tags:         <array[string]>,
+        tag:         "",
         subtasks:     <array[string]>
     }
     Example Usage:
