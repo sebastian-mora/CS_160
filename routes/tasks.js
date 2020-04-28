@@ -1,7 +1,7 @@
 // ========= IMPORTS
 const express = require('express');
 const router = express.Router();
-var mysql = require('mysql');
+const db = require('./database/db_tasks');
 
 
 // ========= UTILITIES
@@ -40,136 +40,6 @@ function isEmptyObject(obj) {
 }
 
 
-// ========= DATABASE
-// note: as these are internal methods, they assume valid input
-let database = mysql.createConnection({
-  host: "10.0.0.219",
-  user: "seb",
-  database: "sqldev", // Enter the name of your database
-  password: "test" // Enter your password
-});
-
-database.connect(function(error) {
-    if (error) {
-        console.log("Error connecting to database");
-        console.log(error);
-    } else {
-        console.log("Connected to database");
-    }
-});
-// todo: add errors, we want the tasks route to be able to report the error in the response message, rather than logging
-// here...perhaps errors or a status string, that if not empty indicates the error that occurred?
-function addTask(taskJson) {
-    let query = `INSERT INTO task (date_due,title,description,priority,status) VALUES( '${taskJson.date_due}', '${taskJson.title}', '${taskJson.description}', '${taskJson.priority}', '${taskJson.status}')`
-    database.query(query, function(error, result) {
-        if (error) {
-            console.log("Error in task query");
-            console.log(error);
-        } else {
-            console.log(result);
-        }
-    });
-}
-
-function addSubTask(subtask){
-    let query = `INSERT INTO subtasks (title, task_id, status) VALUES('${subtask.title}', '${subtask.task_id}', 'open')`;
-    database.query(query, function(error, result) {
-        if (error) {
-            console.log("Error in task query");
-            console.log(error);
-        } else {
-            console.log(result);
-        }
-    });
-}
-
-
-function deleteSubTask(subtask_id){
-    let query = `UPDATE subtasks SET status='closed' WHERE subtask_id='${subtask_id}';`;
-    database.query(query, function(error, result) {
-        if (error) {
-            console.log("Error in task query");
-            console.log(error);
-        } else {
-            console.log(result);
-        }
-    });
-}
-
-function updateTask(uid, taskJson) {
-    let query = `UPDATE task SET date_due='${taskJson.date_due}', title='${taskJson.title}', description='${taskJson.description}', priority='${taskJson.priority}', status='${taskJson.status}' WHERE uid=${uid}`
-    database.query(query, function(error, result) {
-        if (error) {
-            console.log("Error updating task query");
-            console.log(error);
-        } else {
-            console.log(result);
-        }
-    });
-}
-
-// let query = 
-// lookupTask(uid: int) => json | {} if not found
-function searchLookup(search){
-   
-    return new Promise(function(resolve, reject) {
-        // The Promise constructor should catch any errors thrown on
-        // this tick. Alternately, try/catch and reject(err) on catch.
-  
-        var query_str = `SELECT * FROM task WHERE title LIKE '%${search}%' OR priority LIKE '%${search}%' `;
-
-        database.query(query_str, function (err, rows, fields) {
-            // Call reject on error states,
-            // call resolve with results
-            if (err) {
-                return reject(err);
-            }
-            resolve(rows);
-        });
-    });
-}
-
-// lookupTasks(createdAfter: date, createdBefore: date) => list[json] | {} if none in time range
-function lookupTasks(createdAfter, createdBefore){
-
-  return new Promise(function(resolve, reject) {
-      // The Promise constructor should catch any errors thrown on
-      // this tick. Alternately, try/catch and reject(err) on catch.
-
-      var query_str = 'SELECT * FROM task WHERE date_created BETWEEN "' + createdAfter.toISOString() +'" AND "' + createdBefore.toISOString() + '"';
-
-      database.query(query_str, function (err, rows, fields) {
-          // Call reject on error states,
-          // call resolve with results
-          if (err) {
-              return reject(err);
-          }
-          resolve(rows);
-      });
-  });
-}
-
-
-function lookupSubTasks(task_uid){
-
-    return new Promise(function(resolve, reject) {
-        // The Promise constructor should catch any errors thrown on
-        // this tick. Alternately, try/catch and reject(err) on catch.
-  
-        var query_str = `SELECT * FROM subtasks WHERE task_id='${task_uid}'`;
-  
-        database.query(query_str, function (err, rows, fields) {
-            // Call reject on error states,
-            // call resolve with results
-            if (err) {
-                return reject(err);
-            }
-            resolve(rows);
-        });
-    });
-  }
-
-
 
 isOpen = (task) => {
   return task.status == 'open'
@@ -189,7 +59,7 @@ Example Usage:
 router.get('/search', function(req, res) {
     const search = req.query['search'];
     
-    searchLookup(search).then(function(rows) {
+    db.searchLookup(search).then(function(rows) {
         const message =  "Fetched ALL " + rows.length + " task(s)";
         task_data = rows.filter(isOpen)
         
@@ -201,7 +71,7 @@ router.get('/search', function(req, res) {
                  task.subtasks = []
 
                  
-                 lookupSubTasks(task.uid).then(function (subrows) {
+                 db.lookupSubTasks(task.uid).then(function (subrows) {
                      if (i === task_data.length -1) resolve();
                      
                       subrows.forEach(sub => {
@@ -242,7 +112,7 @@ Example Usage:
     curl --location --request GET 'http://127.0.0.1:3000/tasks'
 */
 router.get('/', function(req, res) {
-     lookupTasks(getEpochDate(), getCurrentDate()).then(function(rows) {
+     db.lookupTasks(getEpochDate(), getCurrentDate()).then(function(rows) {
        const message =  "Fetched ALL " + rows.length + " task(s)";
        task_data = rows.filter(isOpen)
        
@@ -253,7 +123,7 @@ router.get('/', function(req, res) {
             task_data.forEach((task, i) => {
                 task.subtasks = []
 
-                lookupSubTasks(task.uid).then(function (subrows) {
+                db.lookupSubTasks(task.uid).then(function (subrows) {
                     if (i === task_data.length -1) resolve();
 
                      subrows.forEach(sub => {
@@ -271,15 +141,7 @@ router.get('/', function(req, res) {
             res.render('pages/index.ejs', {tasks:task_data});
         })
 
-      
-       
     }).catch((err) => setImmediate(() => { throw err; }));
-
-    // res.send({
-    //     "status": "success",
-    //     "data": taskJsons,
-    //     "message": "Fetched ALL " + taskJsons.length + " task(s)"
-    // });
 
 });
 
@@ -315,7 +177,7 @@ router.get('/?', function(req, res) {
 });
 
 
-const EXPECTED_FIELDS = ['date_due', 'title', 'description', 'tags', 'priority', 'status'];
+const EXPECTED_FIELDS = ['date_due', 'title', 'description', 'tag', 'priority', 'status'];
 /*
 --- Create ---
 Creates a new task, with a uid that is decided upon writing to the database
@@ -328,7 +190,7 @@ Syntax:
         status:       <string> {open, in progress, closed, deleted},
         title:        <string>,
         description:  <string>,
-        tags:         <array[string]>,
+        tag:         "",
         comments:     <array[string]>,
         subtasks:     <array[string]>
     }
@@ -341,7 +203,7 @@ Example Usage:
         "date_due": "2020-02-25T15:16:30.000Z",
         "title": "TITLE",
         "description": "DETAILS",
-        "tags": [],
+        "tag": "",
         "subtasks": []
     }'
 */
@@ -358,7 +220,7 @@ router.post('/', function(req, res) {
     }
 
     if (isValid) {
-        addTask(taskJson);
+        db.addTask(taskJson);
         res.redirect('/tasks')
     } else {
         res.status(400).send({
@@ -381,7 +243,7 @@ Syntax:
         status:       <string> {open, in progress, closed, deleted},
         title:        <string>,
         description:  <string>,
-        tags:         <array[string]>,
+        tag:         "",
         subtasks:     <array[string]>
     }
     Example Usage:
@@ -402,7 +264,7 @@ router.post('/:uid', function(req, res) {
     }
 
     if (isValid) {
-        updateTask(req.params.uid, taskJson);
+        db.updateTask(req.params.uid, taskJson);
         res.redirect('/tasks')
     } else {
         res.status(400).send({
@@ -435,7 +297,7 @@ router.post('/:uid/subtask', function(req, res) {
         console.log(taskJson);
         
         if (taskJson.delete){
-            deleteSubTask(taskJson.delete)
+            db.deleteSubTask(taskJson.delete)
         }
 
         else{
@@ -444,7 +306,7 @@ router.post('/:uid/subtask', function(req, res) {
                 title: taskJson.title
             }
     
-            addSubTask(subtask);
+            db.addSubTask(subtask);
         }
 
         res.redirect('/tasks')
