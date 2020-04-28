@@ -30,9 +30,9 @@ CREATE TABLE `task` (
   `description` varchar(45) DEFAULT NULL,
   `priority` varchar(45) DEFAULT NULL,
   `status` varchar(45) DEFAULT NULL,
-  `tag` varchar(45) DEFAULT NULL,
+  `tag` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,8 +41,34 @@ CREATE TABLE `task` (
 
 LOCK TABLES `task` WRITE;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES (9,'2020-04-18 20:26:21','2020-04-30','Updated Name','asd','high','deleted'),(11,'2020-04-18 20:28:33','2020-04-19','Take out the Trash','Need to take out the trash','high','open'),(12,'2020-04-18 20:32:44','2020-04-28','Mop the floors','Mop all the floors','meidum','open'),(13,'2020-04-18 20:32:59','2020-04-20','Wash the Car','Wash the car','high','open');
+INSERT INTO `task` VALUES (24,'2020-04-28 08:50:11','2020-04-15','asd','123','high','open','personal');
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `subtasks`
+--
+
+DROP TABLE IF EXISTS `subtasks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `subtasks` (
+  `subtask_id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `task_id` int NOT NULL,
+  `status` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`subtask_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `subtasks`
+--
+
+LOCK TABLES `subtasks` WRITE;
+/*!40000 ALTER TABLE `subtasks` DISABLE KEYS */;
+INSERT INTO `subtasks` VALUES (8,'SUB 1 1',16,'closed'),(9,'asdasd',16,'closed'),(10,'new',16,'closed'),(11,'add',16,'open'),(12,'This is a subtask',24,'open');
+/*!40000 ALTER TABLE `subtasks` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -54,4 +80,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-18 13:37:54
+-- Dump completed on 2020-04-28  2:02:09
