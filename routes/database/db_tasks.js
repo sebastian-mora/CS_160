@@ -64,7 +64,7 @@ function searchLookup(search){
         // The Promise constructor should catch any errors thrown on
         // this tick. Alternately, try/catch and reject(err) on catch.
   
-        var query_str = `SELECT * FROM task WHERE title LIKE '%${search}%' OR priority LIKE '%${search}%' `;
+        var query_str = `SELECT * FROM task WHERE title LIKE '%${search}%' OR priority LIKE '%${search}%' OR tag LIKE '%${search}%'`;
 
         database.query(query_str, function (err, rows, fields) {
             // Call reject on error states,

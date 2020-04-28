@@ -71,7 +71,7 @@ router.get('/search', function(req, res) {
                  task.subtasks = []
 
                  
-                 lookupSubTasks(task.uid).then(function (subrows) {
+                 db.lookupSubTasks(task.uid).then(function (subrows) {
                      if (i === task_data.length -1) resolve();
                      
                       subrows.forEach(sub => {
