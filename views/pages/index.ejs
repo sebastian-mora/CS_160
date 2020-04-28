@@ -4,6 +4,7 @@
 <head>
     <!-- Adds all the importing of libs -->
     <%- include('../partials/Head') -%>
+    <link rel="stylesheet" href="/css/index.css">
 </head>
 
 <body class="">
@@ -26,11 +27,14 @@
 
 
 
+
                 <!-- Dark nav bar used for searching and adding tasks -->
                 <%- include('../partials/index/TaskMenu') -%>
 
                 <% tasks.forEach(function(task, i) { %>
-                  <%- include('../partials/index/TaskModal', {modal_name:"taskModal"+i, task:task}) -%>
+                  <%- include('../partials/index/TaskModal', {modal_name_task:"taskModal"+i, modal_name_sub:"subModal"+i,task:task  , modal_name_edit:"editModal"+i, task:task}) -%>
+                  <%- include('../partials/index/EditTaskModal', {modal_name:"editModal"+i,task:task}) -%>
+                  <%- include('../partials/index/SubTaskModal', {modal_name_sub:"subModal"+i,task:task}) -%>
               <% }); %>
 
                     <!-- Holds all tasks -->
@@ -41,21 +45,37 @@
                             <thead>
                                 <tr>
                                     <th scope="col"></th>
+                                    <th scope="col">Due Date</th>
                                     <th scope="col">Task Name</th>
-                                    <th scope="col">Date</th>
+                                    <th scope="col">Date Created</th>
                                     <th scope="col">Prority</th>
                                 </tr>
                             </thead>
 
                             <tbody>
                               <% tasks.forEach(function(task, i) { %>
-                                 <td><%= task.date_created %> </td>
-                                 <td><%= task.title %> </td>
-                                 <td><%= task.date_due %> </td>
-                                 <td><%= task.priority %> </td>
-                                 <td><button type="button" class="btn-sm btn-info" data-toggle="modal" data-target="#taskModal<%=i%>">Info</button></td>
-                                 <!-- Indivual task overlay -->
 
+                                <tr>
+
+                                  <th scope="col">
+                                    <form action="/tasks/<%= task.uid %>" method="post">
+                                      <input type="hidden" id="uid" name="uid" value="<%= task.uid %>">
+                                      <input type="hidden" id="title" name="title" value="<%= task.title %>">
+                                      <input type="hidden" id="date_due" name="date_due" value="<%= task.date_due %>">
+                                      <input type="hidden" id="description" name="description" value="<%=task.description%>">
+                                      <input type="hidden" id="priority" name="priority" value="<%= task.priority %>">
+                                      <input type="hidden" id="status" name="status" value="deleted">
+                                      <input type="submit" value="X">
+                                    </form>
+                                  </th>
+                                   <td><%= task.date_due %> </td>
+                                   <td><%= task.title %> </td>
+                                   <td><%= task.date_created %> </td>
+                                   <td><%= task.priority %> </td>
+                                   <td><button type="button" class="btn-sm btn-info" data-toggle="modal" data-target="#taskModal<%=i%>">Info</button></td>
+                                   <td style="display: none;">asdasd</td>
+                                   <!-- Indivual task overlay -->
+                              </tr>
                              <% }); %>
                             </tbody>
 

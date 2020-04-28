@@ -1,17 +1,51 @@
 
-<div class="modal fade" id="<%=modal_name%>" tabindex="-1" role="dialog" aria-labelledby="<%=modal_name%>Label" aria-hidden="true">
+<div class="modal fade" id="<%=modal_name_task%>" tabindex="-1" role="dialog" aria-labelledby="<%=modal_name_task%>Label" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="<%=modal_name%>ModalLabel"><%=task.title%></h5>
+        <h3 class="modal-title" id="<%=modal_name_task%>ModalLabel"><%=task.title%></h3>
+        <div class="task-progress">
+          <label for="progress">Prog</label>
+          <progress id="" value="50" max="100"> 32% </progress>
+        </div>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
+
       </div>
       <div class="modal-body">
-          <p><%=task.description%></p>
+
+        <label>Description</label>
+        <p><%=task.description%></p>
+
+        <label>Due Date</label>
+        <p><%= task.date_due %> </p>
+
+        <label>Priority</label>
+        <p><%= task.priority %> </p>
       </div>
+
+      <div class="subtask-container">
+        <ul class="subtask-list"> 
+          <% for (var i =0; i < task.subtasks.length;  i++ ) { %>
+            <li>
+              <form action="/task/<%= task.uid %>/subtask"" enctype='application/json' method="POST"">
+                <button type="submit" value="submit" class="btn-sm btn-success ">✓</button>
+                <input type="hidden" name="delete" value="<%= task.subtasks[i].subtask_id%>">
+                <%= task.subtasks[i].title %> 
+              </form>
+
+            </li>
+            
+          <% } %>
+
+         </ul>
+      </div>
+
+
       <div class="modal-footer">
+        <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#<%=modal_name_sub%>">Sub </button>
+        <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#<%=modal_name_edit%>">Edit </button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>

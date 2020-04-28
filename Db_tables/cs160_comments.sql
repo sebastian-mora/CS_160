@@ -16,28 +16,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `subtasks`
+-- Table structure for table `comments`
 --
 
-DROP TABLE IF EXISTS `subtasks`;
+DROP TABLE IF EXISTS `comments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `subtasks` (
-  `subtasks_id` int(11) NOT NULL,
-  `subtasks_desc` varchar(45) DEFAULT NULL,
+CREATE TABLE `comments` (
+  `comments_id` int(11) NOT NULL,
+  `comments_desc` varchar(45) DEFAULT NULL,
   `task_id` int(11) NOT NULL,
-  PRIMARY KEY (`subtasks_id`)
+  PRIMARY KEY (`comments_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `subtasks`
+-- Dumping data for table `comments`
 --
 
-LOCK TABLES `subtasks` WRITE;
-/*!40000 ALTER TABLE `subtasks` DISABLE KEYS */;
-INSERT INTO `subtasks` VALUES (1,'Test subtask',1);
-/*!40000 ALTER TABLE `subtasks` ENABLE KEYS */;
+LOCK TABLES `comments` WRITE;
+/*!40000 ALTER TABLE `comments` DISABLE KEYS */;
+INSERT INTO `comments` VALUES (1,'Test comment',1);
+/*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-03-15 22:39:53
+-- Dump completed on 2020-04-10 19:22:10

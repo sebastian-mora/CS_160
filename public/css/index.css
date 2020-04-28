@@ -78,16 +78,17 @@ a, a:hover, a:focus {
 
 #task-box{
   margin-left: 25%;
+  width: 90%;
 }
 
 #task-menu nav{
-  background-color: rgba(107,121,142, 0.3);
-/*
+  /* background-color: rgba(107,121,142, 0.3); */
+
   width: auto;
-  height: 15%;
+  height: 70%;
   margin-bottom: 3%;
   margin-top: 2%;
-  border-color: black; */
+  border-color: black;
 
 }
 
@@ -120,4 +121,68 @@ a.btn:hover {
      -moz-transition-duration: 0.5s;
      -o-transition-duration: 0.5s;
  }
+
+
+/* Task Modal */
+
+div.task-progress{
+    padding-left: 15%;
+    margin-top: 1%;
+}
+
+
+div.task-progress progress{
+
+
+}
+
+div.modal progress::-moz-progress-bar { background: #7386D5;  }
+
+
+/* Modal Task CSS */
+div.modal-body{
+    color: #000;
+
+}
+
+div.modal-body label{
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+
+div.modal-body p{
+    font-size: 20px;
+    color: black;
+}
+
+div.subtask-container{
+    background:#ededed ;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-bottom: 5%;
+    border: 1px solid black;
+}
+
+.subtask-list{
+    padding-top: 5%;
+    list-style-type: none;
+}
+
+.subtask-list button{
+    margin-right: 5%;
+    margin-bottom: 2%;
+}
+
+
+
+
+
+
+/* End of task Modal */
+
+
+
+
 /* end of individual tasks */

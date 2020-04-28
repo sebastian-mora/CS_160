@@ -1,6 +1,7 @@
 // ========= IMPORTS
 const express = require('express');
 const router = express.Router();
+const db = require('./database/db_tasks');
 
 
 // ========= UTILITIES
@@ -39,40 +40,10 @@ function isEmptyObject(obj) {
 }
 
 
-// ========= DATABASE
-// note: as these are internal methods, they assume valid input
 
-// addTask(taskJson: json) => bool
-function addTask(taskJson) {
-    // todo: replace with actual database write
-    return true;
+isOpen = (task) => {
+  return task.status == 'open'
 }
-
-// lookupTask(uid: int) => json | {} if not found
-function lookupTask(uid) {
-    // todo: replace dummy data with actual lookup result (as json assembled from sql query)
-    if (uid < 0) {
-        return {};
-    }
-    return {
-        "uid": uid,
-        "date_created": "2020-02-24T15:16:30.000Z",
-        "date_due":     "2020-02-25T15:16:30.000Z",
-        "title":        "my dummy task title",
-        "description":  "my dummy description",
-        "priority": "high",
-        "tags":     [],
-        "comments": [],
-        "subtasks": []
-    };
-}
-
-// lookupTasks(createdAfter: date, createdBefore: date) => list[json] | {} if none in time range
-function lookupTasks(createdAfter, createdBefore) {
-    // todo: replace dummy data with actual lookup result (as json assembled from sql query)
-    return [lookupTask(6)];
-}
-
 
 // ========= ENDPOINTS
 
@@ -85,22 +56,51 @@ Syntax:
 Example Usage:
     curl -v http://127.0.0.1:3000/tasks
 */
-router.get('/:uid', function(req, res) {
-    const taskJson = lookupTask(req.params.uid);
-    if (!isEmptyObject(taskJson)) {
-        res.send({
-            "status": "success",
-            "message": "Fetched task with uid=" + req.params.uid,
-            "data": taskJson
-        });
-    } else {
-        res.status(404).send({
-            "status": "error",
-            "message": "No task with uid=" + req.params.uid + " found",
-            "data": taskJson
-        });
-    }
+router.get('/search', function(req, res) {
+    const search = req.query['search'];
+    
+    db.searchLookup(search).then(function(rows) {
+        const message =  "Fetched ALL " + rows.length + " task(s)";
+        task_data = rows.filter(isOpen)
+        
+         var loop = new Promise((resolve, reject) => {
+
+            if(task_data.length == 0){resolve()}
+
+             task_data.forEach((task, i) => {
+                 task.subtasks = []
+
+                 
+                 lookupSubTasks(task.uid).then(function (subrows) {
+                     if (i === task_data.length -1) resolve();
+                     
+                      subrows.forEach(sub => {
+                         if(sub.status == 'open'){
+                             task.subtasks.push({title:sub.title, subtask_id:sub.subtask_id})
+                         }
+                         
+                      }) 
+ 
+                 });
+             });
+         })
+ 
+         loop.then(() =>{
+             res.render('pages/index.ejs', {tasks:task_data});
+         })
+ 
+       
+        
+     }).catch((err) => setImmediate(() => { throw err; }));
+ 
+     // res.send({
+     //     "status": "success",
+     //     "data": taskJsons,
+     //     "message": "Fetched ALL " + taskJsons.length + " task(s)"
+     // });
+ 
 });
+
 
 /*
 --- Fetch All Tasks ---
@@ -112,15 +112,47 @@ Example Usage:
     curl --location --request GET 'http://127.0.0.1:3000/tasks'
 */
 router.get('/', function(req, res) {
-    const taskJsons = lookupTasks(getEpochDate(), getCurrentDate());
-    const message =  "Fetched ALL " + taskJsons.length + " task(s)";
+     db.lookupTasks(getEpochDate(), getCurrentDate()).then(function(rows) {
+       const message =  "Fetched ALL " + rows.length + " task(s)";
+       task_data = rows.filter(isOpen)
+       
+
+        var loop = new Promise((resolve, reject) => {
+            if(task_data.length == 0){resolve()}
+
+            task_data.forEach((task, i) => {
+                task.subtasks = []
+
+                db.lookupSubTasks(task.uid).then(function (subrows) {
+                    if (i === task_data.length -1) resolve();
+
+                     subrows.forEach(sub => {
+                        if(sub.status == 'open'){
+                            task.subtasks.push({title:sub.title, subtask_id:sub.subtask_id})
+                        }
+                        
+                     }) 
+
+                });
+            });
+        })
+
+        loop.then(() =>{
+            res.render('pages/index.ejs', {tasks:task_data});
+        })
+
+      
+       
+    }).catch((err) => setImmediate(() => { throw err; }));
+
     // res.send({
     //     "status": "success",
     //     "data": taskJsons,
     //     "message": "Fetched ALL " + taskJsons.length + " task(s)"
     // });
-    res.render('pages/index.ejs', {tasks:taskJsons});
+
 });
+
 
 /*
 --- Fetch Tasks Within Time Span---
@@ -152,14 +184,18 @@ router.get('/?', function(req, res) {
     }
 });
 
+
+const EXPECTED_FIELDS = ['date_due', 'title', 'description', 'tags', 'priority', 'status'];
 /*
---- Create Task ---
+--- Create ---
 Creates a new task, with a uid that is decided upon writing to the database
 
 Syntax:
     POST <host>/tasks @body={
         date_created: <iso-datetime>,
         date_due:     <iso-datetime>,
+        priority:     <high>,
+        status:       <string> {open, in progress, closed, deleted},
         title:        <string>,
         description:  <string>,
         tags:         <array[string]>,
@@ -170,47 +206,129 @@ Example Usage:
     curl --location --request POST 'http://127.0.0.1:3000/tasks' \
     --header 'Content-Type: application/json' \
     --data-raw '{
-        "date_created": "2020-02-24T15:16:30.000Z",
+        "priority": "high",
+        "status": "open",
         "date_due": "2020-02-25T15:16:30.000Z",
         "title": "TITLE",
         "description": "DETAILS",
         "tags": [],
-        "comments": [],
         "subtasks": []
     }'
 */
 router.post('/', function(req, res) {
     // todo: add more validation, as of course we only want good data entering the database
-    const expectedFields = ['date_due', 'title', 'description', 'tags', 'priority'];
     var isValid, textPayload, taskJson;
-
-
     try {
         textPayload = JSON.stringify(req.body);
         taskJson = JSON.parse(textPayload);
-        isValid = hasExactFields(taskJson, expectedFields);
+        isValid = hasExactFields(taskJson, EXPECTED_FIELDS);
     } catch (error) {
         console.log(error);
         isValid = false;
     }
 
     if (isValid) {
-        addTask(taskJson);
-        res.send({
-            "status": "success",
-            "message": "Created task with fields: " + expectedFields,
-            "data": textPayload
-        });
-
+        db.addTask(taskJson);
+        res.redirect('/tasks')
     } else {
         res.status(400).send({
             "status": "error",
-            "message": "Expected exact fields: " + expectedFields,
+            "message": "Expected exact fields: " + EXPECTED_FIELDS,
             "data": textPayload
         });
     }
 });
 
+
+/*
+--- Edit a Task ---
+Fetch a single task, with nonexistence treated as a 404 error
+
+Syntax:
+    POST <host>/tasks/<uid> @body={
+        date_due:     <iso-datetime>,
+        priority:     <high>,
+        status:       <string> {open, in progress, closed, deleted},
+        title:        <string>,
+        description:  <string>,
+        tags:         <array[string]>,
+        subtasks:     <array[string]>
+    }
+    Example Usage:
+    curl -v http://127.0.0.1:3000/tasks
+*/
+router.post('/:uid', function(req, res) {
+    // todo: add more validation, as of course we only want good data entering the database
+    var isValid, textPayload, taskJson;
+
+    try {
+        textPayload = JSON.stringify(req.body);
+        taskJson = JSON.parse(textPayload);
+        // isValid = hasExactFields(taskJson, EXPECTED_FIELDS);
+        isValid = true
+    } catch (error) {
+        console.log(error);
+        isValid = false;
+    }
+
+    if (isValid) {
+        db.updateTask(req.params.uid, taskJson);
+        res.redirect('/tasks')
+    } else {
+        res.status(400).send({
+            "status": "error",
+            "message": "Expected exact fields: " + EXPECTED_FIELDS,
+            "data": textPayload
+        });
+    }
+});
+
+
+
+// Adding a subtask to existing task 
+
+router.post('/:uid/subtask', function(req, res) {
+    // todo: add more validation, as of course we only want good data entering the database
+    var isValid, textPayload, taskJson;
+
+    try {
+        textPayload = JSON.stringify(req.body);
+        taskJson = JSON.parse(textPayload);
+        // isValid = hasExactFields(taskJson, EXPECTED_FIELDS);
+        isValid = true
+    } catch (error) {
+        console.log(error);
+        isValid = false;
+    }
+
+    if (isValid) {
+        console.log(taskJson);
+        
+        if (taskJson.delete){
+            db.deleteSubTask(taskJson.delete)
+        }
+
+        else{
+            subtask = {
+                task_id:req.params.uid,
+                title: taskJson.title
+            }
+    
+            db.addSubTask(subtask);
+        }
+
+        res.redirect('/tasks')
+
+    } else {
+        res.status(400).send({
+            "status": "error",
+            "message": "Expected exact fields: " + EXPECTED_FIELDS,
+            "data": textPayload
+        });
+    }
+
+
+});
 
 // ========= EXPORTS
 module.exports = router;

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <%- include('../partials/Head') -%>
+    <link rel="stylesheet" href="/css/login.css">
+    <title></title>
+  </head>
+  <body>
+    <div class="wrapper fadeInDown">
+        <div id="formContent">
+          <!-- Tabs Titles -->
+
+          <!-- Icon -->
+          <div class="fadeIn first">
+            <img src="imgs/login/login_icon.png" id="icon" alt="User Icon" />
+          </div>
+
+          <!-- Login Form -->
+          <form action="/login" method="post">
+            <input type="text" id="login" class="fadeIn second" name="login" placeholder="login">
+            <input type="text" id="password" class="fadeIn third" name="login" placeholder="password">
+            <input type="submit" class="fadeIn fourth" value="login">
+          </form>
+
+          <!-- Remind Passowrd -->
+          <div id="formFooter">
+            <a class="underlineHover" href="#">Create an Account</a>
+            <br>
+            <a class="underlineHover" href="#">Forgot Password?</a>
+          </div>
+
+        </div>
+        </div>
+  </body>
+</html>
+
+
+<div>Icons made by <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
