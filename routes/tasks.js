@@ -136,6 +136,28 @@ function lookupTasks(createdAfter, createdBefore){
   });
 }
 
+
+function lookupSubTasks(task_uid){
+
+    return new Promise(function(resolve, reject) {
+        // The Promise constructor should catch any errors thrown on
+        // this tick. Alternately, try/catch and reject(err) on catch.
+  
+        var query_str = `SELECT title FROM subtasks WHERE task_id='${task_uid}'`;
+  
+        database.query(query_str, function (err, rows, fields) {
+            // Call reject on error states,
+            // call resolve with results
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+        });
+    });
+  }
+
+
+
 isOpen = (task) => {
   return task.status == 'open'
 }
@@ -187,8 +209,30 @@ router.get('/', function(req, res) {
      lookupTasks(getEpochDate(), getCurrentDate()).then(function(rows) {
        const message =  "Fetched ALL " + rows.length + " task(s)";
        task_data = rows.filter(isOpen)
+       
 
-       res.render('pages/index.ejs', {tasks:task_data});
+        var loop = new Promise((resolve, reject) => {
+            task_data.forEach((task, i) => {
+                task.subtasks = []
+
+                lookupSubTasks(task.uid).then(function (subrows) {
+                    if (i === task_data.length -1) resolve();
+
+                     subrows.forEach(sub => {
+                       task.subtasks.push(sub.title)
+                     }) 
+
+                });
+            });
+        })
+
+        loop.then(() =>{
+            console.log(task_data);
+            res.render('pages/index.ejs', {tasks:task_data});
+        })
+
+      
+       
     }).catch((err) => setImmediate(() => { throw err; }));
 
     // res.send({
