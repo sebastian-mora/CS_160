@@ -10,22 +10,9 @@
         <ul class="list-unstyled components">
             <p>Project manager</p>
             <li class="active">
-                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
-                <ul class="collapse list-unstyled" id="homeSubmenu">
-                    <li>
-                        <a href="#">Home 1</a>
-                    </li>
-                    <li>
-                        <a href="#">Home 2</a>
-                    </li>
-                    <li>
-                        <a href="#">Home 3</a>
-                    </li>
-                </ul>
+                <a href="/tasks">Home</a>
             </li>
-            <li>
-                <a href="#">Account</a>
-            </li>
+
             <li>
                 <a href="#tagSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Tags</a>
                 <ul class="collapse list-unstyled" id="tagSubmenu">
@@ -45,17 +32,22 @@
                 <a href="#prioSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Priorities</a>
                 <ul class="collapse list-unstyled" id="prioSubmenu">
                     <li>
-                        <a href="#">User-defined 1</a>
+                        <a href="/tasks/search?search=high">High</a>
                     </li>
                     <li>
-                        <a href="#">User-defined 2</a>
+                        <a href="/tasks/search?search=medium">Medium</a>
                     </li>
                     <li>
-                        <a href="#">User-defined 3</a>
+                        <a href="/tasks/search?search=low">Low</a>
                     </li>
                 </ul>
             </li>
             <li>
+
+
+            <li class="active">
+                <a href="/login">Logout</a>
+            </li>
 
         </ul>
 

@@ -110,13 +110,13 @@ function updateTask(uid, taskJson) {
 
 // let query = 
 // lookupTask(uid: int) => json | {} if not found
-function lookupTask(search){
+function searchLookup(search){
    
     return new Promise(function(resolve, reject) {
         // The Promise constructor should catch any errors thrown on
         // this tick. Alternately, try/catch and reject(err) on catch.
   
-        var query_str = `SELECT * FROM task WHERE title LIKE '%${search}%'`;
+        var query_str = `SELECT * FROM task WHERE title LIKE '%${search}%' OR priority LIKE '%${search}%' `;
 
         database.query(query_str, function (err, rows, fields) {
             // Call reject on error states,
@@ -189,23 +189,46 @@ Example Usage:
 router.get('/search', function(req, res) {
     const search = req.query['search'];
     
-    if (search) {
-
-        tasks = lookupTask(search).then(function(rows) {
-            const message =  "Fetched ALL " + rows.length + " task(s)";
-            console.log(message);
-            
-            task_data = rows.filter(isOpen)
-            res.render('pages/index.ejs', {tasks:task_data});
-        }).catch((err) => setImmediate(() => { throw err; }));
+    searchLookup(search).then(function(rows) {
+        const message =  "Fetched ALL " + rows.length + " task(s)";
+        task_data = rows.filter(isOpen)
         
-    } else {
-        res.status(404).send({
-            "status": "error",
-            "message": "No task with uid=" + search + " found",
-            "data": search
-        });
-    }
+         var loop = new Promise((resolve, reject) => {
+
+            if(task_data.length == 0){resolve()}
+
+             task_data.forEach((task, i) => {
+                 task.subtasks = []
+
+                 
+                 lookupSubTasks(task.uid).then(function (subrows) {
+                     if (i === task_data.length -1) resolve();
+                     
+                      subrows.forEach(sub => {
+                         if(sub.status == 'open'){
+                             task.subtasks.push({title:sub.title, subtask_id:sub.subtask_id})
+                         }
+                         
+                      }) 
+ 
+                 });
+             });
+         })
+ 
+         loop.then(() =>{
+             res.render('pages/index.ejs', {tasks:task_data});
+         })
+ 
+       
+        
+     }).catch((err) => setImmediate(() => { throw err; }));
+ 
+     // res.send({
+     //     "status": "success",
+     //     "data": taskJsons,
+     //     "message": "Fetched ALL " + taskJsons.length + " task(s)"
+     // });
+ 
 });
 
 
@@ -225,6 +248,8 @@ router.get('/', function(req, res) {
        
 
         var loop = new Promise((resolve, reject) => {
+            if(task_data.length == 0){resolve()}
+
             task_data.forEach((task, i) => {
                 task.subtasks = []
 
