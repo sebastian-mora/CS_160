@@ -72,7 +72,20 @@ function addTask(taskJson) {
 }
 
 function addSubTask(subtask){
-    let query = `INSERT INTO subtasks (title, task_id) VALUES('${subtask.title}', '${subtask.task_id}')`;
+    let query = `INSERT INTO subtasks (title, task_id, status) VALUES('${subtask.title}', '${subtask.task_id}', 'open')`;
+    database.query(query, function(error, result) {
+        if (error) {
+            console.log("Error in task query");
+            console.log(error);
+        } else {
+            console.log(result);
+        }
+    });
+}
+
+
+function deleteSubTask(subtask_id){
+    let query = `UPDATE subtasks SET status='closed' WHERE subtask_id='${subtask_id}';`;
     database.query(query, function(error, result) {
         if (error) {
             console.log("Error in task query");
@@ -143,7 +156,7 @@ function lookupSubTasks(task_uid){
         // The Promise constructor should catch any errors thrown on
         // this tick. Alternately, try/catch and reject(err) on catch.
   
-        var query_str = `SELECT title FROM subtasks WHERE task_id='${task_uid}'`;
+        var query_str = `SELECT * FROM subtasks WHERE task_id='${task_uid}'`;
   
         database.query(query_str, function (err, rows, fields) {
             // Call reject on error states,
@@ -219,7 +232,10 @@ router.get('/', function(req, res) {
                     if (i === task_data.length -1) resolve();
 
                      subrows.forEach(sub => {
-                       task.subtasks.push(sub.title)
+                        if(sub.status == 'open'){
+                            task.subtasks.push({title:sub.title, subtask_id:sub.subtask_id})
+                        }
+                        
                      }) 
 
                 });
@@ -227,7 +243,6 @@ router.get('/', function(req, res) {
         })
 
         loop.then(() =>{
-            console.log(task_data);
             res.render('pages/index.ejs', {tasks:task_data});
         })
 
@@ -392,12 +407,21 @@ router.post('/:uid/subtask', function(req, res) {
     }
 
     if (isValid) {
-        subtask = {
-            task_id:req.params.uid,
-            title: taskJson.title
+        console.log(taskJson);
+        
+        if (taskJson.delete){
+            deleteSubTask(taskJson.delete)
         }
 
-        addSubTask(subtask);
+        else{
+            subtask = {
+                task_id:req.params.uid,
+                title: taskJson.title
+            }
+    
+            addSubTask(subtask);
+        }
+
         res.redirect('/tasks')
 
     } else {
