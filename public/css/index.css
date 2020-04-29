@@ -92,6 +92,10 @@ a, a:hover, a:focus {
 
 }
 
+.task-rows td{
+    padding-top: 2%;
+}
+
 
 /* end of task container */
 
@@ -121,6 +125,48 @@ a.btn:hover {
      -moz-transition-duration: 0.5s;
      -o-transition-duration: 0.5s;
  }
+
+
+ .checkbox-circle{
+    padding-top: 5%;;
+    list-style-type: none;
+}
+
+#checkmark {
+    display:inline-block;
+    width: 30px;
+    height:30px;
+    background: white;
+    border-radius:50%;
+    -ms-transform: rotate(45deg); /* IE 9 */
+    -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
+    transform: rotate(45deg);
+    
+}
+
+#checkmark:before{
+    content:"";
+    position: absolute;
+    width:3px;
+    height:13px;
+    background-color:black;
+    left:15px;
+    top:8px;
+}
+
+#checkmark:after{
+    content:"";
+    position: absolute;
+    width:7px;
+    height:3px;
+    background-color:black;
+    left:10px;
+    top:18px;
+}
+
+#checkmark:hover{
+    background-color: #7386d5;
+}
 
 
 /* Task Modal */
@@ -174,8 +220,6 @@ div.subtask-container{
     margin-right: 5%;
     margin-bottom: 2%;
 }
-
-
 
 
 

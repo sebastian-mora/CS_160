@@ -55,17 +55,19 @@
                             <tbody>
                               <% tasks.forEach(function(task, i) { %>
 
-                                <tr>
+                                <tr class="task-rows">
 
                                   <th scope="col">
-                                    <form action="/tasks/<%= task.uid %>" method="post">
+                                    <form id="completeForm" action="/tasks/<%= task.uid %>" method="post">
                                       <input type="hidden" id="uid" name="uid" value="<%= task.uid %>">
                                       <input type="hidden" id="title" name="title" value="<%= task.title %>">
                                       <input type="hidden" id="date_due" name="date_due" value="<%= task.date_due %>">
                                       <input type="hidden" id="description" name="description" value="<%=task.description%>">
                                       <input type="hidden" id="priority" name="priority" value="<%= task.priority %>">
                                       <input type="hidden" id="status" name="status" value="deleted">
-                                      <input type="submit" value="X">
+                                      <ul class="checkbox-circle">
+                                        <li  onclick="completeForm.submit();"><span id="checkmark"></span></li>
+                                      </ul>
                                     </form>
                                   </th>
                                    <td><%= task.date_due %> </td>
