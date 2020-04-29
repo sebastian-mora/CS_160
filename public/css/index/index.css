@@ -27,4 +27,23 @@ a, a:hover, a:focus {
 }
 /* end of general */
 
+#task-box h1{
+    text-decoration: underline;
+}
 
+#task-nav{
+    background: grey;
+}
+
+#task-form-nav{
+    width: 100%;
+    padding: 1%;
+}
+
+#add-task{
+    
+}
+
+#task-search{
+    margin-left: 58%;
+}
