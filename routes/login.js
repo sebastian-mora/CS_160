@@ -16,5 +16,9 @@ router.post('/', function(req, res) {
   res.redirect('/tasks')
 
 });
+/* GET users listing. */
+router.get('/register', function(req, res) {
+  res.render('pages/register.ejs')
+});
 
 module.exports = router;
