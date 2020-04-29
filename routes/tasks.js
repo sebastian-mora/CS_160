@@ -69,6 +69,8 @@ router.get('/search', function(req, res) {
 
              task_data.forEach((task, i) => {
                  task.subtasks = []
+                 task.date_created = task.date_created.toLocaleDateString()
+                 task.date_due = new Date(task.date_due).toLocaleDateString()
 
                  
                  db.lookupSubTasks(task.uid).then(function (subrows) {
@@ -122,6 +124,8 @@ router.get('/', function(req, res) {
 
             task_data.forEach((task, i) => {
                 task.subtasks = []
+                task.date_created = task.date_created.toLocaleDateString()
+                task.date_due = new Date(task.date_due).toLocaleDateString()
 
                 db.lookupSubTasks(task.uid).then(function (subrows) {
                     if (i === task_data.length -1) resolve();
