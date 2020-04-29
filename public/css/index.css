@@ -39,8 +39,17 @@ a, a:hover, a:focus {
     color: #fff;
     transition: all 0.3s;
 }
+.active{
+    text-decoration: underline;
+}
 
+#tagSubmenu{
+    background: grey;
+}
 
+#prioSubmenu{
+    background: grey;
+}
 
 #sidebar .sidebar-header {
     padding: 20px;
@@ -71,15 +80,5 @@ a, a:hover, a:focus {
     color: #fff;
     background: #6d7fcc;
 }
-/* end of sidebar */
 
 
-
-
-
-/* End of task Modal */
-
-
-
-
-/* end of individual tasks */
