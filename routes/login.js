@@ -10,9 +10,7 @@ router.post('/', function(req, res) {
   data = req.body['login'];
   user_name = data[0]
   password = data[1]
-
-  // TODO add check if valid user
-
+  
   res.redirect('/tasks')
 
 });
