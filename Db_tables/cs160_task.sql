@@ -27,7 +27,7 @@ CREATE TABLE `task` (
   `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
   `date_due` varchar(45) DEFAULT NULL,
   `title` varchar(45) DEFAULT NULL,
-  `description` varchar(45) DEFAULT NULL,
+  `description` varchar(300) DEFAULT NULL,
   `priority` varchar(45) DEFAULT NULL,
   `status` varchar(45) DEFAULT NULL,
   `tag` varchar(100) DEFAULT NULL,
