@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/users', users);
+app.use('/user', users);
 app.use('/tasks', tasks);
 app.use('/tasks?', tasks);
 app.use('/tasks/:uid', tasks);
