@@ -3,10 +3,10 @@ var mysql = require('mysql');
 // ========= DATABASE
 // note: as these are internal methods, they assume valid input
 let database = mysql.createConnection({
-    host: "mysql",
-    user: "admin",
-    database: "cs160", // Enter the name of your database
-    password: "admin" // Enter your password
+    host: "10.0.0.219",
+    user: "seb",
+    database: "sqldev", // Enter the name of your database
+    password: "test" // Enter your password
 });
 
 database.connect(function (error) {
