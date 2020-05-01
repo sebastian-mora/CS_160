@@ -33,9 +33,17 @@
           <% for (var i =0; i < task.subtasks.length;  i++ ) { %>
             <li>
               <form action="/task/<%= task.uid %>/subtask"" enctype='application/json' method="POST"">
-                <button type="submit" value="submit" class="btn-sm btn-success ">✓</button>
-                <input type="hidden" name="delete" value="<%= task.subtasks[i].subtask_id%>">
-                <%= task.subtasks[i].title %> 
+                <div>
+                  <ul class="checkbox-circle-sub">
+                    <li  onclick="completeForm.submit();"><span id="checkmark-sub"></span></li>
+                    <li id="#sub-title"><%= task.subtasks[i].title %> </li>
+                    
+                  </ul>
+                  <input type="hidden" name="delete" value="<%= task.subtasks[i].subtask_id%>">
+                  
+                  
+                </div>
+
               </form>
 
             </li>
