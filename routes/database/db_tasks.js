@@ -5,16 +5,13 @@ const database = require('./connection');
 // here...perhaps errors or a status string, that if not empty indicates the error that occurred?
 function addTask(taskJson) {
 
-    console.log(taskJson);
-    
-    
-    let query = `INSERT INTO task (date_due,title,description,priority,status, tag) VALUES( '${taskJson.date_due}', '${taskJson.title}', '${taskJson.description}', '${taskJson.priority}', '${taskJson.status}', '${taskJson.tag}')`
+    let query = `INSERT INTO task (date_due,title,description,priority,status, tag, userid) VALUES( '${taskJson.date_due}', '${taskJson.title}', '${taskJson.description}', '${taskJson.priority}', '${taskJson.status}', '${taskJson.tag}', '${taskJson.userid}')`
     database.query(query, function(error, result) {
         if (error) {
             console.log("Error in task query");
             console.log(error);
         } else {
-            console.log(result);
+            console.log("inserted");
         }
     });
 }
@@ -26,7 +23,7 @@ function addSubTask(subtask){
             console.log("Error in task query");
             console.log(error);
         } else {
-            console.log(result);
+            // console.log(result);
         }
     });
 }
@@ -39,7 +36,7 @@ function deleteSubTask(subtask_id){
             console.log("Error in task query");
             console.log(error);
         } else {
-            console.log(result);
+            // console.log(result);
         }
     });
 }
@@ -51,20 +48,20 @@ function updateTask(uid, taskJson) {
             console.log("Error updating task query");
             console.log(error);
         } else {
-            console.log(result);
+            // console.log(result);
         }
     });
 }
 
 // let query = 
 // lookupTask(uid: int) => json | {} if not found
-function searchLookup(search){
+function searchLookup(search, userid){
    
     return new Promise(function(resolve, reject) {
         // The Promise constructor should catch any errors thrown on
         // this tick. Alternately, try/catch and reject(err) on catch.
   
-        var query_str = `SELECT * FROM task WHERE title LIKE '%${search}%' OR priority LIKE '%${search}%' OR tag LIKE '%${search}%'`;
+        var query_str = `SELECT * FROM task WHERE (title LIKE '%${search}%' OR priority LIKE '%${search}%' OR tag LIKE '%${search}%') AND userid=${userid}`;
 
         database.query(query_str, function (err, rows, fields) {
             // Call reject on error states,
@@ -77,14 +74,14 @@ function searchLookup(search){
     });
 }
 
-// lookupTasks(createdAfter: date, createdBefore: date) => list[json] | {} if none in time range
-function lookupTasks(createdAfter, createdBefore){
+// lookupTasks(userid: int) => list[json] | {} if none in time range
+function lookupTasks(userid){
 
   return new Promise(function(resolve, reject) {
       // The Promise constructor should catch any errors thrown on
       // this tick. Alternately, try/catch and reject(err) on catch.
 
-      var query_str = 'SELECT * FROM task WHERE date_created BETWEEN "' + createdAfter.toISOString() +'" AND "' + createdBefore.toISOString() + '"';
+      var query_str = `SELECT * FROM task WHERE userid=${userid}`;
 
       database.query(query_str, function (err, rows, fields) {
           // Call reject on error states,
