@@ -117,8 +117,9 @@
       display:inline-block;
       width: 30px;
       height:30px;
-      background: white;
       border-radius:50%;
+      background: white;
+      border: 1px solid black;
       -ms-transform: rotate(45deg); /* IE 9 */
       -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
       transform: rotate(45deg);
@@ -147,6 +148,10 @@
   
   #checkmark:hover{
       background-color: #7386d5;
+  }
+
+  #sub-title{
+      padding-bottom: 10%;
   }
   
   

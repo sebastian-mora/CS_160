@@ -1,30 +1,33 @@
--- MySQL dump 10.13  Distrib 5.7.29, for Linux (x86_64)
---
--- Host: 10.0.0.219    Database: sqldev
--- ------------------------------------------------------
--- Server version	8.0.19
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
-CREATE DATABASE IF NOT EXISTS cs160;
-
+DROP TABLE IF EXISTS `task`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `task` (
+  `uid` int NOT NULL AUTO_INCREMENT,
+  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
+  `date_due` varchar(45) DEFAULT NULL,
+  `title` varchar(45) DEFAULT NULL,
+  `description` varchar(300) DEFAULT NULL,
+  `priority` varchar(45) DEFAULT NULL,
+  `status` varchar(45) DEFAULT NULL,
+  `tag` varchar(100) DEFAULT NULL,
+  `userid` int NOT NULL,
+  PRIMARY KEY (`uid`)
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Add Admin User
+-- Dumping data for table `task`
 --
 
+LOCK TABLES `task` WRITE;
+/*!40000 ALTER TABLE `task` DISABLE KEYS */;
+INSERT INTO `task` VALUES (30,'2020-05-02 18:23:05','2020-05-06','Take out the trash','Take out the the trash for garbage pick up on Friday','high','open','personal',2),(31,'2020-05-02 18:23:05','2020-05-07','Do Math HW','Do math HW on my mathlab','medium','open','school',2),(32,'2020-05-02 18:23:05','2020-05-011','Send email to client','Send marketing emails','low','open','work',2),(33,'2020-05-02 18:23:05','2020-05-12','Mops the floors','Mop the floors in the house','low','open','personal',3),(34,'2020-05-02 18:23:05','2020-05-20','Email professor','Ask professor for an A','high','open','school',3),(35,'2020-05-02 18:23:05','2020-06-03','Complete excel sheet','Finish creating the formuals','medium','open','work',3);
+/*!40000 ALTER TABLE `task` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `task`
+-- Table structure for table `subtasks`
 --
 
 DROP TABLE IF EXISTS `subtasks`;
@@ -36,7 +39,7 @@ CREATE TABLE `subtasks` (
   `task_id` int NOT NULL,
   `status` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`subtask_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +48,7 @@ CREATE TABLE `subtasks` (
 
 LOCK TABLES `subtasks` WRITE;
 /*!40000 ALTER TABLE `subtasks` DISABLE KEYS */;
-INSERT INTO `subtasks` VALUES (16,'ASD sub task',28,'open'),(17,'This is an asd subtask',29,'closed'),(18,'asd sub',29,'closed');
+INSERT INTO `subtasks` VALUES (19,'Empty the bathroom cans.',30,'open'),(20,'Replace garabage bags',30,'open'),(21,'Ask boss for clarification',32,'open'),(22,'Remove rugs from bathroom',33,'open'),(23,'List all reasons why',34,'open'),(24,'Learn how to SUM rows',35,'open');
 /*!40000 ALTER TABLE `subtasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -72,39 +75,8 @@ CREATE TABLE `accounts` (
 
 LOCK TABLES `accounts` WRITE;
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
-INSERT INTO `accounts` VALUES ('','asd','asd','asd',1),('asd','seb','asd','asd',2),('seb@test.com','Seb','TEst','asd',3);
+INSERT INTO `accounts` VALUES ('seb@dev.com','Sebastian','Mora','asd',2),('jeff@dev.com','Jeff','Person','asd',3);
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `task`
---
-
-DROP TABLE IF EXISTS `task`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `task` (
-  `uid` int NOT NULL AUTO_INCREMENT,
-  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
-  `date_due` varchar(45) DEFAULT NULL,
-  `title` varchar(45) DEFAULT NULL,
-  `description` varchar(300) DEFAULT NULL,
-  `priority` varchar(45) DEFAULT NULL,
-  `status` varchar(45) DEFAULT NULL,
-  `tag` varchar(100) DEFAULT NULL,
-  `userid` int NOT NULL,
-  PRIMARY KEY (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `task`
---
-
-LOCK TABLES `task` WRITE;
-/*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES (28,'2020-05-02 04:07:40','5/5/2020','ASD Main Task','asd','high','deleted','undefined',2),(29,'2020-05-02 04:10:51','2020-05-20','This is an asd task','','high','open','school',2);
-/*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -116,4 +88,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-05-01 21:27:10
+-- Dump completed on 2020-05-02 11:39:50
