@@ -1,3 +1,3 @@
 FROM mysql
 
-COPY cs160_task.sql /docker-entrypoint-initdb.d/
+COPY cs160_tabels.sql /docker-entrypoint-initdb.d/

@@ -11,7 +11,7 @@ services:
       healthcheck:
           test: "exit 0"
   
-  myawesomeapp:
+  taskisk:
       build: .
       depends_on:
           mysql:
