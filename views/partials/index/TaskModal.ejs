@@ -32,10 +32,10 @@
         <ul class="subtask-list"> 
           <% for (var i =0; i < task.subtasks.length;  i++ ) { %>
             <li>
-              <form action="/task/<%= task.uid %>/subtask"" enctype='application/json' method="POST"">
+              <form action="/task/<%= task.uid %>/subtask" id="subform" enctype='application/json' method="POST"">
                 <div>
                   <ul class="checkbox-circle-sub">
-                    <li  onclick="completeForm.submit();"><span id="checkmark-sub"></span></li>
+                    <li  onclick="subform.submit();"><span id="checkmark-sub"></span></li>
                     <li id="#sub-title"><%= task.subtasks[i].title %> </li>
                     
                   </ul>

@@ -1,7 +1,10 @@
 // ========= IMPORTS
 const express = require('express');
+var cookieParser = require('cookie-parser')
 const router = express.Router();
 const db = require('./database/db_tasks');
+
+router.use(cookieParser())
 
 
 // ========= UTILITIES
@@ -58,8 +61,9 @@ Example Usage:
 */
 router.get('/search', function(req, res) {
     const search = req.query['search'];
+    let userid = req.cookies.userid;
     
-    db.searchLookup(search).then(function(rows) {
+    db.searchLookup(search, userid).then(function(rows) {
         const message =  "Fetched ALL " + rows.length + " task(s)";
         task_data = rows.filter(isOpen)
         
@@ -114,11 +118,13 @@ Example Usage:
     curl --location --request GET 'http://127.0.0.1:3000/tasks'
 */
 router.get('/', function(req, res) {
-     db.lookupTasks(getEpochDate(), getCurrentDate()).then(function(rows) {
+
+    let userid = req.cookies.userid;
+    
+     db.lookupTasks(userid).then(function(rows) {
        const message =  "Fetched ALL " + rows.length + " task(s)";
        task_data = rows.filter(isOpen)
-       
-
+    
         var loop = new Promise((resolve, reject) => {
             if(task_data.length == 0){resolve()}
 
@@ -224,6 +230,11 @@ router.post('/', function(req, res) {
     }
 
     if (isValid) {
+
+        //add the userid
+        let userid = req.cookies.userid;
+        taskJson.userid = userid;
+
         db.addTask(taskJson);
         res.redirect('/tasks')
     } else {
@@ -298,7 +309,6 @@ router.post('/:uid/subtask', function(req, res) {
     }
 
     if (isValid) {
-        console.log(taskJson);
         
         if (taskJson.delete){
             db.deleteSubTask(taskJson.delete)

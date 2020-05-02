@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var userDB = require('./database/db_users')
+var cookieParser = require('cookie-parser');
+
+router.use(cookieParser());
 
 /* GET users listing. */
 router.get('/', function(req, res) {
@@ -13,8 +16,7 @@ router.post('/', function(req, res) {
 
   userDB.findUser(email, password).then( userid =>{
     if(userid){
-      console.log("FOUND USER IN ROUTE");
-      res.cookie('userid', userid)
+      res.cookie('userid', userid, {maxAge: Date.now() + 360000}); 
       res.redirect('/tasks')
     }
     else{

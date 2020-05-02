@@ -34,7 +34,6 @@ function findUser(email, password){
         }
 
         if(rows.length >= 1){
-          console.log(rows[0].userid); 
           resolve(rows[0].userid)
         }
    
