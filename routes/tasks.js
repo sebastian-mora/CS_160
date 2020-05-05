@@ -123,6 +123,7 @@ router.get('/', function(req, res) {
     
      db.lookupTasks(userid).then(function(rows) {
        const message =  "Fetched ALL " + rows.length + " task(s)";
+
        task_data = rows.filter(isOpen)
     
         var loop = new Promise((resolve, reject) => {
@@ -235,15 +236,21 @@ router.post('/', function(req, res) {
         let userid = req.cookies.userid;
         taskJson.userid = userid;
 
-        db.addTask(taskJson);
-        res.redirect('/tasks')
-    } else {
-        res.status(400).send({
-            "status": "error",
-            "message": "Expected exact fields: " + EXPECTED_FIELDS,
-            "data": textPayload
-        });
-    }
+        db.addTask(taskJson).then(function(error){
+            if(error){
+                res.status(400).send({
+                    "status": "error",
+                    "message": "Expected exact fields: " + EXPECTED_FIELDS,
+                    "data": textPayload
+                });
+
+            }
+
+            else{
+                res.redirect('/tasks')
+            }
+        })
+    } 
 });
 
 
@@ -279,15 +286,21 @@ router.post('/:uid', function(req, res) {
     }
 
     if (isValid) {
-        db.updateTask(req.params.uid, taskJson);
-        res.redirect('/tasks')
-    } else {
-        res.status(400).send({
-            "status": "error",
-            "message": "Expected exact fields: " + EXPECTED_FIELDS,
-            "data": textPayload
-        });
-    }
+        db.updateTask(req.params.uid, taskJson).then(function(error){
+            if(error){
+                res.status(400).send({
+                    "status": "error",
+                    "message": "Expected exact fields: " + EXPECTED_FIELDS,
+                    "data": textPayload
+                });
+
+            }
+
+            else{
+                res.redirect('/tasks')
+            }
+        }) 
+    }  
 });
 
 
@@ -311,7 +324,12 @@ router.post('/:uid/subtask', function(req, res) {
     if (isValid) {
         
         if (taskJson.delete){
-            db.deleteSubTask(taskJson.delete)
+            db.deleteSubTask(taskJson.delete).then(function(error){
+                if(error){}
+                else{
+                    res.redirect('/tasks');
+                }
+            });
         }
 
         else{
@@ -320,17 +338,24 @@ router.post('/:uid/subtask', function(req, res) {
                 title: taskJson.title
             }
     
-            db.addSubTask(subtask);
+            db.addSubTask(subtask).then(function(error){
+                if(error){
+                    res.status(400).send({
+                        "status": "error",
+                        "message": "Expected exact fields: " + EXPECTED_FIELDS,
+                        "data": textPayload
+                    });
+                }
+
+                else{
+                    res.redirect('/tasks')
+                }
+            })
         }
 
-        res.redirect('/tasks')
-
+    
     } else {
-        res.status(400).send({
-            "status": "error",
-            "message": "Expected exact fields: " + EXPECTED_FIELDS,
-            "data": textPayload
-        });
+        
     }
 
 
