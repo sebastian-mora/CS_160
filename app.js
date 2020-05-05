@@ -60,3 +60,5 @@ app.use(function(err, req, res, next) {
 });
 
 app.listen(port, () => console.log(`CS-160 app listening on port ${port}!`));
+
+module.exports = app;

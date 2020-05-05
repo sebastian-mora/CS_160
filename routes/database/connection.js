@@ -1,15 +1,11 @@
 var mysql = require('mysql');
 
-// ========= DATABASE
-// note: as these are internal methods, they assume valid input
+// create pool so connections are managed by the server when querying
 let pool = mysql.createPool({
     host: "mysql",
     user: "admin",
-    database: "cs160", // Enter the name of your database
-    password: "admin" // Enter your password
+    database: "cs160",
+    password: "admin"
 });
 
-
 module.exports = pool;
-
-
