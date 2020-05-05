@@ -5,14 +5,13 @@ var cookieParser = require('cookie-parser');
 
 router.use(cookieParser());
 
-/* GET users listing. */
 router.get('/', function(req, res) {
   res.render('pages/login.ejs')
 });
 
 router.post('/', function(req, res) {
-  var email = req.body.email;
-  var password =req.body.password;
+  var email    = req.body.email;
+  var password = req.body.password;
 
   userDB.findUser(email, password).then( userid =>{
     if(userid){
@@ -26,7 +25,6 @@ router.post('/', function(req, res) {
 });
 
 
-/* GET users listing. */
 router.get('/register', function(req, res) {
   res.render('pages/register.ejs')
 });

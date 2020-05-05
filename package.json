@@ -7,8 +7,18 @@
     "cookie-parser": "^1.4.5",
     "debug": "",
     "ejs": "",
-    "express": "",
+    "supertest": "",
+    "express": "^4.17.1",
     "mysql": "^2.18.1"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
+  },
+  "scripts": {
+    "test": "jest"
   },
   "start-docker": "node app.js"
 }
