@@ -39,7 +39,7 @@ function findUser(email, password){
       }
       connection.query(query, function(error, rows) {
           if (error) {
-              return reject(err);
+              return reject(error);
           }
 
           if(rows.length >= 1){
