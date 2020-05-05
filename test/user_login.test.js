@@ -26,12 +26,11 @@ describe('Login to App', () => {
             .expect('Location', '/login');
         expect(res.statusCode).toEqual(302);
     });
-    it('should redirect already-registered user to their tasks page and save their id as a cookie', async () => {
+    it('should redirect already-registered user to their tasks page', async () => {
         const res = await supertest(app)
             .post('/login')
             .send(test_data.REGISTERED_USER)
-            .expect('Location', '/tasks')
-            .expect('set-cookie').toEqual('userid=' + test_data.REGISTERED_USER.id + ';');
+            .expect('Location', '/tasks');
         expect(res.statusCode).toEqual(302);
     });
 });
