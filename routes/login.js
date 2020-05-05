@@ -1,9 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var userDB = require('./database/db_users')
-var cookieParser = require('cookie-parser');
-
-router.use(cookieParser());
 
 /* GET users listing. */
 router.get('/', function(req, res) {
@@ -11,24 +7,14 @@ router.get('/', function(req, res) {
 });
 
 router.post('/', function(req, res) {
-  var email = req.body.email;
-  var password =req.body.password;
+  data = req.body['login'];
+  user_name = data[0]
+  password = data[1]
 
-  userDB.findUser(email, password).then( userid =>{
-    if(userid){
-      res.cookie('userid', userid, {maxAge: Date.now() + 360000}); 
-      res.redirect('/tasks')
-    }
-    else{
-      res.redirect('/login')
-    }
-  });
-});
+  // TODO add check if valid user
 
+  res.redirect('/tasks')
 
-/* GET users listing. */
-router.get('/register', function(req, res) {
-  res.render('pages/register.ejs')
 });
 
 module.exports = router;

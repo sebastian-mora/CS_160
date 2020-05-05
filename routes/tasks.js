@@ -1,10 +1,7 @@
 // ========= IMPORTS
 const express = require('express');
-var cookieParser = require('cookie-parser')
 const router = express.Router();
 const db = require('./database/db_tasks');
-
-router.use(cookieParser())
 
 
 // ========= UTILITIES
@@ -61,9 +58,8 @@ Example Usage:
 */
 router.get('/search', function(req, res) {
     const search = req.query['search'];
-    let userid = req.cookies.userid;
     
-    db.searchLookup(search, userid).then(function(rows) {
+    db.searchLookup(search).then(function(rows) {
         const message =  "Fetched ALL " + rows.length + " task(s)";
         task_data = rows.filter(isOpen)
         
@@ -73,11 +69,9 @@ router.get('/search', function(req, res) {
 
              task_data.forEach((task, i) => {
                  task.subtasks = []
-                 task.date_created = task.date_created.toLocaleDateString()
-                 task.date_due = new Date(task.date_due).toLocaleDateString()
 
                  
-                 db.lookupSubTasks(task.uid).then(function (subrows) {
+                 lookupSubTasks(task.uid).then(function (subrows) {
                      if (i === task_data.length -1) resolve();
                      
                       subrows.forEach(sub => {
@@ -118,21 +112,16 @@ Example Usage:
     curl --location --request GET 'http://127.0.0.1:3000/tasks'
 */
 router.get('/', function(req, res) {
-
-    let userid = req.cookies.userid;
-    
-     db.lookupTasks(userid).then(function(rows) {
+     db.lookupTasks(getEpochDate(), getCurrentDate()).then(function(rows) {
        const message =  "Fetched ALL " + rows.length + " task(s)";
-
        task_data = rows.filter(isOpen)
-    
+       
+
         var loop = new Promise((resolve, reject) => {
             if(task_data.length == 0){resolve()}
 
             task_data.forEach((task, i) => {
                 task.subtasks = []
-                task.date_created = task.date_created.toLocaleDateString()
-                task.date_due = new Date(task.date_due).toLocaleDateString()
 
                 db.lookupSubTasks(task.uid).then(function (subrows) {
                     if (i === task_data.length -1) resolve();
@@ -152,7 +141,15 @@ router.get('/', function(req, res) {
             res.render('pages/index.ejs', {tasks:task_data});
         })
 
+      
+       
     }).catch((err) => setImmediate(() => { throw err; }));
+
+    // res.send({
+    //     "status": "success",
+    //     "data": taskJsons,
+    //     "message": "Fetched ALL " + taskJsons.length + " task(s)"
+    // });
 
 });
 
@@ -188,7 +185,7 @@ router.get('/?', function(req, res) {
 });
 
 
-const EXPECTED_FIELDS = ['date_due', 'title', 'description', 'tag', 'priority', 'status'];
+const EXPECTED_FIELDS = ['date_due', 'title', 'description', 'tags', 'priority', 'status'];
 /*
 --- Create ---
 Creates a new task, with a uid that is decided upon writing to the database
@@ -201,7 +198,7 @@ Syntax:
         status:       <string> {open, in progress, closed, deleted},
         title:        <string>,
         description:  <string>,
-        tag:         "",
+        tags:         <array[string]>,
         comments:     <array[string]>,
         subtasks:     <array[string]>
     }
@@ -214,7 +211,7 @@ Example Usage:
         "date_due": "2020-02-25T15:16:30.000Z",
         "title": "TITLE",
         "description": "DETAILS",
-        "tag": "",
+        "tags": [],
         "subtasks": []
     }'
 */
@@ -231,26 +228,15 @@ router.post('/', function(req, res) {
     }
 
     if (isValid) {
-
-        //add the userid
-        let userid = req.cookies.userid;
-        taskJson.userid = userid;
-
-        db.addTask(taskJson).then(function(error){
-            if(error){
-                res.status(400).send({
-                    "status": "error",
-                    "message": "Expected exact fields: " + EXPECTED_FIELDS,
-                    "data": textPayload
-                });
-
-            }
-
-            else{
-                res.redirect('/tasks')
-            }
-        })
-    } 
+        db.addTask(taskJson);
+        res.redirect('/tasks')
+    } else {
+        res.status(400).send({
+            "status": "error",
+            "message": "Expected exact fields: " + EXPECTED_FIELDS,
+            "data": textPayload
+        });
+    }
 });
 
 
@@ -265,7 +251,7 @@ Syntax:
         status:       <string> {open, in progress, closed, deleted},
         title:        <string>,
         description:  <string>,
-        tag:         "",
+        tags:         <array[string]>,
         subtasks:     <array[string]>
     }
     Example Usage:
@@ -286,21 +272,15 @@ router.post('/:uid', function(req, res) {
     }
 
     if (isValid) {
-        db.updateTask(req.params.uid, taskJson).then(function(error){
-            if(error){
-                res.status(400).send({
-                    "status": "error",
-                    "message": "Expected exact fields: " + EXPECTED_FIELDS,
-                    "data": textPayload
-                });
-
-            }
-
-            else{
-                res.redirect('/tasks')
-            }
-        }) 
-    }  
+        db.updateTask(req.params.uid, taskJson);
+        res.redirect('/tasks')
+    } else {
+        res.status(400).send({
+            "status": "error",
+            "message": "Expected exact fields: " + EXPECTED_FIELDS,
+            "data": textPayload
+        });
+    }
 });
 
 
@@ -322,14 +302,10 @@ router.post('/:uid/subtask', function(req, res) {
     }
 
     if (isValid) {
+        console.log(taskJson);
         
         if (taskJson.delete){
-            db.deleteSubTask(taskJson.delete).then(function(error){
-                if(error){}
-                else{
-                    res.redirect('/tasks');
-                }
-            });
+            db.deleteSubTask(taskJson.delete)
         }
 
         else{
@@ -338,24 +314,17 @@ router.post('/:uid/subtask', function(req, res) {
                 title: taskJson.title
             }
     
-            db.addSubTask(subtask).then(function(error){
-                if(error){
-                    res.status(400).send({
-                        "status": "error",
-                        "message": "Expected exact fields: " + EXPECTED_FIELDS,
-                        "data": textPayload
-                    });
-                }
-
-                else{
-                    res.redirect('/tasks')
-                }
-            })
+            db.addSubTask(subtask);
         }
 
-    
+        res.redirect('/tasks')
+
     } else {
-        
+        res.status(400).send({
+            "status": "error",
+            "message": "Expected exact fields: " + EXPECTED_FIELDS,
+            "data": textPayload
+        });
     }
 
 

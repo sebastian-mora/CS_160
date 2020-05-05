@@ -4,13 +4,7 @@
 <head>
     <!-- Adds all the importing of libs -->
     <%- include('../partials/Head') -%>
-    <link rel="stylesheet" href="/css/index/index.css">
-    <link rel="stylesheet" href="/css/index/task.css">
-    <link rel="stylesheet" href="/css/index/sidebar.css">
-    <link rel="stylesheet" href="/css/Modal/AddTask.css">
-    
-    
-    
+    <link rel="stylesheet" href="/css/index.css">
 </head>
 
 <body class="">
@@ -26,10 +20,12 @@
         <!-- Task area -->
 
         <div class="container" id="task-box">
-            <h1>Taskist</h1>
+            <h1>Todo Tasks</h1>
 
             <!-- Form submit overlay -->
             <%- include('../partials/index/AddTaskModal') -%>
+
+
 
 
                 <!-- Dark nav bar used for searching and adding tasks -->
@@ -59,19 +55,17 @@
                             <tbody>
                               <% tasks.forEach(function(task, i) { %>
 
-                                <tr class="task-rows">
+                                <tr>
 
                                   <th scope="col">
-                                    <form id="completeForm" action="/tasks/<%= task.uid %>" method="post">
+                                    <form action="/tasks/<%= task.uid %>" method="post">
                                       <input type="hidden" id="uid" name="uid" value="<%= task.uid %>">
                                       <input type="hidden" id="title" name="title" value="<%= task.title %>">
                                       <input type="hidden" id="date_due" name="date_due" value="<%= task.date_due %>">
                                       <input type="hidden" id="description" name="description" value="<%=task.description%>">
                                       <input type="hidden" id="priority" name="priority" value="<%= task.priority %>">
                                       <input type="hidden" id="status" name="status" value="deleted">
-                                      <ul class="checkbox-circle">
-                                        <li  onclick="completeForm.submit();"><span id="checkmark"></span></li>
-                                      </ul>
+                                      <input type="submit" value="X">
                                     </form>
                                   </th>
                                    <td><%= task.date_due %> </td>
