@@ -4,55 +4,44 @@ let app = require('../app');
 let test_data = require('./test_data');
 
 
+async function postNewTask(userId, taskJson) {
+    var res = await supertest(app).post('/tasks').set('Accept', 'application/json');
+    res.cookie('userid', userId);
+    res.send(taskJson);
+
+    expect(res.statusCode).toEqual(200);
+    return res;
+}
+
+async function requestTask(userId, taskId) {
+    var res = await supertest(app).get('/tasks/' + taskId);
+    res.cookie('userid', userid);
+    res.send();
+
+    expect(res.statusCode).toEqual(200);
+    return res;
+}
+
+async function requestAllTasks(userId) {
+    var res = await supertest(app).get('/tasks');
+    res.cookie('userid', userid);
+    res.send();
+
+    expect(res.statusCode).toEqual(200);
+    return res;
+}
+
 describe('Add a Task', () => {
     it('should have 0 existing tasks', async () => {
-        const res = await supertest(app).get('/tasks').send();
-        expect(res.statusCode).toEqual(200);
+        const tasks = await requestAllTasks(test_data.REGISTERED_USER.id);
+        expect(Object.keys(tasks).length).toEqual(0);
     });
+
     it('should successfully add a task', async () => {
-
+        postNewTask(test_data.REGISTERED_USER.id, test_data.EXAMPLE_TASK_1);
     });
-    it('should successfully retrieve the newly added task', async () => {
-
-    });
-});
-
-describe('Add a SubTask', () => {
-    it('should have failed to add subtask to a non-existing task', async () => {
-
-    });
-    it('should successfully add a subtask to an existing task', async () => {
-
-    });
-    it('should successfully retrieve the newly added subtask', async () => {
-
-    });
-});
-
-describe('Complete a Subtask', () => {
-    it('should mark existing subtask as complete', async () => {
-
-    });
-    it('should mark non-existing subtask as complete', async () => {
-
-    });
-});
-
-describe('Complete a Task', () => {
-    it('should mark existing task as complete', async () => {
-
-    });
-    it('should mark existing task as complete', async () => {
-
-    });
-});
-
-describe('Delete a Task', () => {
-    it('should mark existing subtask as complete', async () => {
-
-    });
-    it('should have 0 existing tasks after deleting', async () => {
-        const res = await supertest(app).get('/tasks').send();
-        expect(res.statusCode).toEqual(200);
+    it('should have 1 existing tasks', async () => {
+        const tasks = await requestAllTasks(test_data.REGISTERED_USER.id);
+        expect(Object.keys(tasks).length).toEqual(1);
     });
 });
