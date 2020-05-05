@@ -4,11 +4,9 @@
   "private": true,
   "dependencies": {
     "body-parser": "",
-    "cookie-parser": "^1.4.5",
     "debug": "",
     "ejs": "",
     "express": "",
     "mysql": "^2.18.1"
-  },
-  "start-docker": "node app.js"
+  }
 }

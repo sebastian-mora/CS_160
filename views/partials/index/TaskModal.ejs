@@ -4,10 +4,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title" id="<%=modal_name_task%>ModalLabel"><%=task.title%></h3>
-        <!-- <div class="task-progress">
+        <div class="task-progress">
           <label for="progress">Prog</label>
           <progress id="" value="50" max="100"> 32% </progress>
-        </div> -->
+        </div>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -23,27 +23,16 @@
 
         <label>Priority</label>
         <p><%= task.priority %> </p>
-
-        <label>Tag</label>
-        <p><%= task.tag %> </p>
       </div>
 
       <div class="subtask-container">
         <ul class="subtask-list"> 
           <% for (var i =0; i < task.subtasks.length;  i++ ) { %>
             <li>
-              <form action="/task/<%= task.uid %>/subtask" id="subform" enctype='application/json' method="POST"">
-                <div>
-                  <ul class="checkbox-circle-sub">
-                    <li  onclick="subform.submit();"><span id="checkmark-sub"></span></li>
-                    <li id="#sub-title"><%= task.subtasks[i].title %> </li>
-                    
-                  </ul>
-                  <input type="hidden" name="delete" value="<%= task.subtasks[i].subtask_id%>">
-                  
-                  
-                </div>
-
+              <form action="/task/<%= task.uid %>/subtask"" enctype='application/json' method="POST"">
+                <button type="submit" value="submit" class="btn-sm btn-success ">✓</button>
+                <input type="hidden" name="delete" value="<%= task.subtasks[i].subtask_id%>">
+                <%= task.subtasks[i].title %> 
               </form>
 
             </li>

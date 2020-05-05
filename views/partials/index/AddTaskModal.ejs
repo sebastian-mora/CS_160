@@ -6,56 +6,41 @@
 
         <!-- Modal Header -->
         <div class="modal-header">
-          <h4 class="modal-title">Add a task</h4>
+          <h4 class="modal-title">Create a task</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
 
         <!-- Modal body -->
         <div class="modal-body">
-          <form action="/task" class="" enctype='application/json' method="POST" name="taskForm">
+          <form action="/task" enctype='application/json' method="POST" name="taskForm">
               <div class="form-group">
 
                 <input type="hidden" name="status" value="open">
                 <label for="title">Task Title</label>
                 <input type="text" class="form-control" name="title" id="title" placeholder="Enter task name">
                 <br>
-
-                <label for="date_due">Date Due</label>
                 <br>
-
+                <label for="date_due">Date Due</label>
                 <input type="date" id="date_due" name="date_due">
                 <br>
                 <br>
 
-
                 <label for="description">Description</label>
-                <br>
-                <br>
                 <input type="text" class="form-control" name="description" id="description" placeholder="Description">
-                <br>
-                <br>
+
 
                 <label for="priority">Choose a priority:</label>
-                <br>
                 <select id="priority" name="priority">
                   <option value="high">High</option>
                   <option value="medium">Medium</option>
                   <option value="low">Low</option>
                 </select>
                 <br>
-                <br>
 
 
-                <label for="tag">Task Tags</label>
-                    <br>
-                <select id="priority" name="tag">
-                  <option value="school">School</option>
-                  <option value="work">Work</option>
-                  <option value="personal">Personal</option>
-                </select>
+                <label for="tags">Task Tags</label>
+                <input type="text" class="form-control" name="tags" id="tags" placeholder="none">
               </div>
-              <br>
-              <br>
 
               <input class="btn btn-success my-2 my-sm-0" value="Submit" type="submit" onclic()">
               <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
