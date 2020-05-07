@@ -110,7 +110,7 @@ function searchLookup(search, userid){
             }
             connection.query(query, function(error, rows) {
                 if (error) {
-                    return reject(err);
+                    return reject(error);
                 } else {
                     connection.release();
                     resolve(rows);
@@ -137,7 +137,7 @@ function lookupTasks(userid){
         }
         connection.query(query, function(error, rows) {
             if (error) {
-                return reject(err);
+                return reject(error);
             } else {
                 connection.release();
                 resolve(rows);
@@ -163,7 +163,7 @@ function lookupSubTasks(task_uid){
             }
             connection.query(query, function(error, rows) {
                 if (error) {
-                    return reject(err);
+                    return reject(error);
                 } else {
                     connection.release();
                     resolve(rows);
